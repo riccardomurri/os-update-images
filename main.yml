@@ -85,6 +85,12 @@
 
     host: '{{ hostvars[inventory_hostname] }}'
 
+  vars_prompt:
+    - name: 'prefix'
+      prompt: 'Prefix for the new snapshot names'
+      default: '*** '
+      private: no
+
   tasks:
     # - name: print info for debugging
     #   debug:
@@ -100,16 +106,11 @@
         - '{{ ansible_os_family }}.yml'
         - 'default.yml'
 
-
-    # - name: clean up VM before snapshot
-    #   script:
-    #     files/cleanup.sh
-
     - include: 'cleanup.yml'
 
     - name: make VM snapshot
       shell: |
-        nova image-create --poll "{{name}}" "{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
+        nova image-create --poll "{{name}}" "{{ prefix }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
       become: no
       delegate_to: localhost
 
