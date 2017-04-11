@@ -18,10 +18,12 @@
     # uzh-only network
     network: c86b320c-9542-4032-a951-c8a068894cc2
 
-    keypair: rmurri
-
     # must be the same across all plays!
     name: sc-images-update
+
+  vars_prompt:
+    - name: 'keypair'
+      prompt: 'Name of OpenStack keypair to authorize for SSH connections'
 
   tasks:
     - name: start VM instance
