@@ -55,7 +55,7 @@
         ansible_ssh_user: '{{ user }}'
         ansible_user: '{{ user }}'
 
-    - name: prepare VM for Ansible (Debian/Ubuntu)
+    - name: prepare VM for Ansible
       # this is needed on official Ubuntu 16.04 images, otherwise the next
       # playbook fails already at the `gather_facts:` step because no Python 2.x
       # can be found...
@@ -63,7 +63,7 @@
         while true; do
             if ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
                 {{ user }}@{{ openstack_servers[0].accessIPv4 }} \
-                'sudo apt-get install -y aptitude python';
+                'command -v apt-get && sudo apt-get install -y aptitude python; exit 0';
             then
                 break
             fi
