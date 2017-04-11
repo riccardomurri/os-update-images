@@ -11,6 +11,21 @@
     upgrade: yes
 
 
+- name: Set timezone, step 1 (Debian/Ubuntu)
+  debconf:
+    name: tzdata
+    vtype: select
+    setting: '{{ item.setting }}'
+    value: '{{ item.value }}'
+  with_items:
+    - setting: 'tzdata/Areas'
+      value: 'Europe'
+    - setting: 'tzdata/Zones/Europe'
+      value: 'Zurich'
+    - setting: 'tzdata/Zones/Etc'
+      value: 'UTC'
+
+
 - name: install packages (Debian/Ubuntu)
   apt:
     name: '{{ item }}'
@@ -18,19 +33,8 @@
   with_items:
     - python
     - python2.7
-    - language-pack-en
-    - language-pack-de
-    - language-pack-fr
-    - language-pack-it
+    - tzdata
 
-
-- name: Set timezone, step 1 (Debian/Ubuntu)
-  shell: |
-    echo '{{ item }}' | debconf-set-selections --verbose
-  with_items:
-    - 'tzdata	tzdata/Areas select Europe'
-    - 'tzdata	tzdata/Zones/Europe select Zurich'
-    - 'tzdata	tzdata/Zones/Etc select UTC'
 
 - name: Set timezone, step 2 (Debian/Ubuntu)
   shell: |
