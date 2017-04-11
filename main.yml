@@ -24,6 +24,7 @@
   vars_prompt:
     - name: 'keypair'
       prompt: 'Name of OpenStack keypair to authorize for SSH connections'
+      private: no
 
   tasks:
     - name: start VM instance
