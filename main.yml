@@ -1,0 +1,119 @@
+---
+
+- name: update Science Cloud VM image (pre)
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    # base images on Science Cloud:
+    # - 27569aaf-38b1-4df2-a4c3-472e93b7bc11 | Ubuntu 16.04 (official)
+    # - f9d9f9d5-a652-4300-9d18-6bd1523f8aa1 | CentOS 7.2.1511 (official)
+    # - 4acb6a2a-b878-4990-bb56-cd8fba250ee6 | CentOS 6.8
+    # - dc497926-6ddb-4b2c-82d4-3e1aeba52136 | Debian 8.6 "jessie" (2017-02-15)
+    image: 27569aaf-38b1-4df2-a4c3-472e93b7bc11
+
+    # username for connecting to image
+    user: 'ubuntu'
+
+    # uzh-only network
+    network: c86b320c-9542-4032-a951-c8a068894cc2
+
+    keypair: rmurri
+
+    # must be the same across all plays!
+    name: sc-images-update
+
+  tasks:
+    - name: start VM instance
+      os_server:
+        name: '{{ name }}'
+        state: present
+        wait: yes
+
+        image: '{{ image }}'
+        boot_from_volume: no
+        flavor: 1cpu-4ram-hpc
+        key_name: '{{ keypair }}'
+        network: '{{ network }}'
+
+    - name: gather VM facts
+      os_server_facts:
+        server: '{{ name }}'
+        #detailed: yes
+
+    # - name: print info for debugging
+    #   debug:
+    #     var: openstack_servers
+
+    - name: Add VM to inventory
+      add_host:
+        # `hostname` is the *IP address* of the new host
+        hostname: '{{ openstack_servers[0].accessIPv4 }}'
+        groups: 'target'
+        ansible_ssh_user: '{{ user }}'
+        ansible_user: '{{ user }}'
+
+    - name: prepare VM for Ansible (Debian/Ubuntu)
+      # this is needed on official Ubuntu 16.04 images, otherwise the next
+      # playbook fails already at the `gather_facts:` step because no Python 2.x
+      # can be found...
+      shell: |
+        while true; do
+            if ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+                {{ user }}@{{ openstack_servers[0].accessIPv4 }} \
+                'sudo apt-get install -y aptitude python';
+            then
+                break
+            fi
+            sleep 10
+        done
+
+
+# this is a separate play so that the `gather_facts:` step runs on all the VMs
+# that were created in the "(pre)" phase
+- name: update Science Cloud VM image
+  hosts: target
+  gather_facts: yes
+  become: yes
+
+  vars:
+    # must be the same across all plays!
+    name: sc-images-update
+
+    host: '{{ hostvars[inventory_hostname] }}'
+
+  tasks:
+    # - name: print info for debugging
+    #   debug:
+    #     var: hostvars
+
+    - include: '{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml'
+
+    # - name: clean up VM before snapshot
+    #   script:
+    #     files/cleanup.sh
+
+    - include: 'cleanup.yml'
+
+    - name: make VM snapshot
+      shell: |
+        nova image-create --poll "{{name}}" "{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
+      become: no
+      delegate_to: localhost
+
+
+- name: update Science Cloud VM image (post)
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    # must be the same across all plays!
+    name: sc-images-update
+
+  tasks:
+
+    - name: stop VM instance
+      os_server:
+        name: '{{ name }}'
+        state: absent
+        wait: yes

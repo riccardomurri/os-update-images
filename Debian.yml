@@ -1,0 +1,37 @@
+---
+
+- name: update packages list (Debian/Ubuntu)
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+
+- name: upgrade all packages (Debian/Ubuntu)
+  apt:
+    upgrade: yes
+
+
+- name: install packages (Debian/Ubuntu)
+  apt:
+    name: '{{ item }}'
+    state: latest
+  with_items:
+    - python
+    - python2.7
+    - language-pack-en
+    - language-pack-de
+    - language-pack-fr
+    - language-pack-it
+
+
+- name: Set timezone, step 1 (Debian/Ubuntu)
+  shell: |
+    echo '{{ item }}' | debconf-set-selections --verbose
+  with_items:
+    - 'tzdata	tzdata/Areas select Europe'
+    - 'tzdata	tzdata/Zones/Europe select Zurich'
+    - 'tzdata	tzdata/Zones/Etc select UTC'
+
+- name: Set timezone, step 2 (Debian/Ubuntu)
+  shell: |
+    dpkg-reconfigure --frontend=noninteractive tzdata

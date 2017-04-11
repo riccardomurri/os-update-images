@@ -1,0 +1,24 @@
+---
+
+- name: clean up VM before snapshot (package files)
+  command: |
+    apt-get clean -y
+  become: yes
+
+- name: clean up VM before snapshot (system files)
+  shell: |
+    rm -r -f -v {{ item }}
+  become: yes
+  with_items:
+    - "/etc/cloud/uzh-customization-script"
+    - "/var/lib/cloud/data/*"
+    - "/var/lib/cloud/instance"
+    - "/var/lib/cloud/instances/*"
+
+- name: clean up VM before snapshot (user files)
+  shell: |
+    rm -r -f -v {{ item[0] }}/{{ item[1] }}
+  become: yes
+  with_nested:
+    - ['/home/centos', '/home/debian', '/home/ubuntu', '/root', '{{ ansible_user_dir }}' ]
+    - [".ansible", ".bash_history", ".cache", ".lesshst", ".ssh/authorized_keys", ".sudo_as_admin_successful", ".Xauthority", ".viminfo"]
