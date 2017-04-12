@@ -1,0 +1,48 @@
+---
+
+- name: start VM instance
+  os_server:
+    name: 'sc-images-update-{{ uuid }}'
+    state: present
+    wait: yes
+
+    image: '{{ uuid }}'
+    boot_from_volume: no
+    flavor: 1cpu-4ram-hpc
+    key_name: '{{ keypair }}'
+    network: '{{ network }}'
+
+- name: gather VM facts
+  os_server_facts:
+    server: 'sc-images-update-{{ uuid }}'
+    detailed: no
+
+# - name: print info for debugging
+#   debug:
+#     var: openstack_servers
+
+- name: Add VM to inventory
+  add_host:
+    # `hostname` is the *IP address* of the new host
+    hostname: '{{ openstack_servers[0].accessIPv4 }}'
+    groups: 'targets'
+    ansible_ssh_user: '{{ user }}'
+    ansible_user: '{{ user }}'
+    uuid: '{{ uuid }}'
+
+- name: prepare VM for Ansible
+  # this is needed on official Ubuntu 16.04 images, otherwise the next
+  # playbook fails already at the `gather_facts:` step because no Python 2.x
+  # can be found...
+  shell: |
+      while true; do
+          if ssh -o UserKnownHostsFile=/dev/null \
+              -o StrictHostKeyChecking=no \
+              {{ user }}@{{ openstack_servers[0].accessIPv4 }} \
+              'command -v apt-get && sudo apt-get install -y aptitude python; exit 0';
+          then
+              break
+          fi
+          sleep 10
+      done
+  when: '"{{ user }}" == "ubuntu"'

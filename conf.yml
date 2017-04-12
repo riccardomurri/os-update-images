@@ -1,0 +1,28 @@
+---
+#
+# List of base images to update on UZH Science Cloud.
+#
+# For each image, the following attributes are mandatory:
+# - UUID
+# - username to use when connecting over SSH
+#
+# Additional attributes are allowed but will be ignored.
+#
+
+images:
+
+  - name: Ubuntu 16.04 (official)
+    uuid: 27569aaf-38b1-4df2-a4c3-472e93b7bc11
+    user: ubuntu
+
+  - name: CentOS 7.2.1511 (official)
+    uuid: f9d9f9d5-a652-4300-9d18-6bd1523f8aa1
+    user: centos
+
+  - name: CentOS 6.8
+    uuid: 4acb6a2a-b878-4990-bb56-cd8fba250ee6
+    user: centos
+
+  - name: Debian 8.6 "jessie" (2017-02-15)
+    uuid: dc497926-6ddb-4b2c-82d4-3e1aeba52136
+    user: debian

@@ -1,6 +1,6 @@
 ---
 
-- include: '{{ host.ansible_os_family }}.yml'
+- include: '{{ ansible_os_family }}.yml'
 
 
 - name: install packages (Ubuntu)

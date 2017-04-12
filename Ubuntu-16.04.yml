@@ -1,6 +1,6 @@
 ---
 
-- include: '{{host.ansible_distribution}}.yml'
+- include: '{{ ansible_distribution }}.yml'
 
 - name: disable unattended upgrades (Ubuntu 16.04)
   # alternatively, we could mask systemd unit `apt-daily.service`
