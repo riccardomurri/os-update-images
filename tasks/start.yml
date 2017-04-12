@@ -33,7 +33,7 @@
 - name: prepare VM for Ansible
   # this is needed on official Ubuntu 16.04 images, otherwise the next
   # playbook fails already at the `gather_facts:` step because no Python 2.x
-  # can be found...
+  # can be found -- so it needs to run *before* the "update VM images" play
   shell: |
       while true; do
           if ssh -o UserKnownHostsFile=/dev/null \
@@ -45,4 +45,6 @@
           fi
           sleep 10
       done
-  when: '"{{ user }}" == "ubuntu"'
+  # cannot use `{{ ansible_distribution }}` or the like here, since facts were
+  # not gathered about this host -- resort to a crude identification mechanism
+  when: '"{{ user }}" in ["debian", "ubuntu"]'
