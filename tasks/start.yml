@@ -29,6 +29,8 @@
     ansible_ssh_user: '{{ user }}'
     ansible_user: '{{ user }}'
     uuid: '{{ uuid }}'
+    extra_plays: '{{ extra_plays }}'
+    extra_prefix: '{{ extra_prefix }}'
 
 - name: prepare VM for Ansible
   # this is needed on official Ubuntu 16.04 images, otherwise the next

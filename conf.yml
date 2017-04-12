@@ -6,6 +6,12 @@
 # - UUID
 # - username to use when connecting over SSH
 #
+# The following attributes are optional:
+# - `extra_plays`: list of additional playbooks to execute on host
+# - `extra_prefix`: a string that is prefixed to the VM snapshot name
+# Combined, the two optional attributes allow the creation of VM images
+# that run additional customization on top of base images.
+#
 # Additional attributes are allowed but will be ignored.
 #
 
@@ -26,3 +32,12 @@ images:
   - name: Debian 8.6 "jessie" (2017-02-15)
     uuid: dc497926-6ddb-4b2c-82d4-3e1aeba52136
     user: debian
+
+  # The following is an example of how to re-create/update
+  # a VM image that installs additional SW on top of the base OS.
+  #
+  # - name: EasyBuild / Ubuntu 16.04
+  #   uuid: 27569aaf-38b1-4df2-a4c3-472e93b7bc11
+  #   user: ubuntu
+  #   extra_plays: 'easybuild.yml'
+  #   extra_prefix`: 'EasyBuild / '

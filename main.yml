@@ -21,6 +21,8 @@
       vars:
         uuid: '{{ img.uuid }}'
         user: '{{ img.user }}'
+        extra_plays: '{{ img.extra_plays|default([]) }}'
+        extra_prefix: '{{ extra_prefix|default("") }}'
       with_items: '{{ images }}'
       loop_control:
         loop_var: img
@@ -51,6 +53,11 @@
         - '{{ ansible_os_family }}.yml'
         - 'default.yml'
 
+    - include: '{{ play }}'
+      loop_control:
+        loop_var: 'play'
+      with_items: '{{ extra_plays }}'
+
 
 # this is a separate play to re-run the `gather_facts:` step;
 # we want vars like `ansible_distribution_version` to be up-to-date
@@ -73,7 +80,7 @@
 
     - name: make VM snapshot
       shell: |
-        nova image-create --poll "sc-images-update-{{ uuid }}" "{{ prefix }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
+        nova image-create --poll "sc-images-update-{{ uuid }}" "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
       become: no
       delegate_to: localhost
 
