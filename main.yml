@@ -36,12 +36,6 @@
   vars_files:
     - conf.yml
 
-  vars_prompt:
-    - name: 'prefix'
-      prompt: 'Prefix for the new snapshot names'
-      default: '*** '
-      private: no
-
   tasks:
     # - name: print info for debugging
     #   debug:
@@ -57,8 +51,25 @@
         - '{{ ansible_os_family }}.yml'
         - 'default.yml'
 
+
+# this is a separate play to re-run the `gather_facts:` step;
+# we want vars like `ansible_distribution_version` to be up-to-date
+# in case the last steps changed it (e.g., minor release upgrade)
+- name: make VM snapshot
+  hosts: targets
+  gather_facts: yes
+
+  vars_prompt:
+    - name: 'prefix'
+      prompt: 'Prefix for the all new snapshot names'
+      default: '*** '
+      private: no
+
+  tasks:
+
     - include: 'tasks/cleanup.yml'
       static: yes
+      become: yes
 
     - name: make VM snapshot
       shell: |
