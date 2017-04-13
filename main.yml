@@ -22,7 +22,7 @@
         uuid: '{{ img.uuid }}'
         user: '{{ img.user }}'
         extra_plays: '{{ img.extra_plays|default([]) }}'
-        extra_prefix: '{{ extra_prefix|default("") }}'
+        extra_prefix: '{{ img.extra_prefix|default("") }}'
       with_items: '{{ images }}'
       loop_control:
         loop_var: img
