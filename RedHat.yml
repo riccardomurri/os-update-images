@@ -1,6 +1,6 @@
 ---
 
-- name: upgrade all packages
+- name: upgrade all packages (CentOS/RHEL)
   yum:
     name: '*'
     state: latest
