@@ -2,7 +2,7 @@
 
 - name: start VM instance
   os_server:
-    name: 'sc-images-update-{{ uuid }}'
+    name: 'sc-update-images-{{ uuid }}'
     state: present
     wait: yes
 
@@ -14,7 +14,7 @@
 
 - name: gather VM facts
   os_server_facts:
-    server: 'sc-images-update-{{ uuid }}'
+    server: 'sc-update-images-{{ uuid }}'
     detailed: no
 
 # - name: print info for debugging
