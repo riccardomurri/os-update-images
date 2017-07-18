@@ -84,6 +84,20 @@
       become: no
       delegate_to: localhost
 
+    - name: turn snapshot back into image
+      shell: |
+        openstack image unset \
+          --property image_location \
+          --property image_state \
+          --property image_type \
+          --property kernel_id \
+          --property owner_id \
+          --property user_id \
+          --property ramdisk_id \
+          "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
+      become: no
+      delegate_to: localhost
+
 
 - name: stop VMs
   hosts: localhost
