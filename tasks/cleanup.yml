@@ -33,3 +33,14 @@
   with_nested:
     - ['/home/centos', '/home/debian', '/home/ubuntu', '/root', '{{ ansible_user_dir }}' ]
     - [".ansible", ".bash_history", ".cache", ".lesshst", ".ssh/authorized_keys", ".sudo_as_admin_successful", ".Xauthority", ".viminfo"]
+
+
+- name: Trim root filesystem before snapshotting
+  command: |
+    fstrim /
+  become: yes
+  # XXX: `fstrim` may not be installed on all images,
+  # or drivers may not support the FITRIM ioctl
+  # so just ignore errors instead of trying to detect
+  # when it should work and when not
+  ignore_errors: yes
