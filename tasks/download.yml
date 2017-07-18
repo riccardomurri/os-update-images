@@ -1,0 +1,69 @@
+---
+
+- name: Download image from {{source}}
+  get_url:
+    url: '{{source}}'
+    dest: './{{dest}}'
+    backup: yes
+
+
+- name: Convert image file {{dest}} to RAW format
+  command: |
+    qemu-img convert -f {{format}} -O raw {{dest}} {{raw}}
+  args:
+    creates: '{{raw}}'
+  when: '"{{ format }}" != "raw"'
+
+
+- name: Compute MD5 checksum of raw image file
+  shell: |
+    md5sum '{{raw}}' | cut -c 1-32
+  register: image_md5sum
+
+
+- name: Check for existing image on OpenStack
+  shell: |
+    openstack image list \
+        --property 'md5sum={{image_md5sum.stdout}}' \
+        -f value -c ID \
+        | head -n 1
+  register: image_list
+
+
+- name: Set image UUID from `openstack image list`
+  set_fact:
+    image_uuid: '{{image_list.stdout}}'
+  when: 'image_list.stdout|length != 0'
+
+
+- name: Upload image to OpenStack
+  # `openstack image create` works almost exactly like `glance image-create` but
+  # allows us to set the output format to YAML, which we can later on parse back
+  # into Ansible variables
+  shell: |
+    openstack image create \
+        --property 'md5sum={{image_md5sum.stdout}}' \
+        --property 'source={{source}}' \
+        --property hw_scsi_model=virtio-scsi \
+        --property hw_disk_bus=scsi \
+        --disk-format raw \
+        --container-format bare \
+        --file '{{raw}}' \
+        -f yaml -c id '{{name}} [upstream]' \
+        | cut -c5-  # extract UUID
+  register: image_create
+  when: 'image_list.stdout|length == 0'
+
+
+- name: Set image UUID from `opestack image create`
+  set_fact:
+    image_uuid: '{{image_create.stdout}}'
+  when: 'image_list.stdout|length == 0'
+
+
+- name: Write image UUID back to conf file
+  lineinfile:
+    destfile: conf.yml
+    insertafter: '^    source: {{source}}'
+    line: '    uuid: {{image_uuid}}'
+    backup: yes

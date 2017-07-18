@@ -1,5 +1,25 @@
 ---
 
+- name: download official images
+  hosts: localhost
+  gather_facts: no
+
+  vars_files:
+    - conf.yml
+
+  tasks:
+    - include: 'tasks/download.yml'
+      vars:
+        source: '{{ img.source }}'
+        dest: '{{ img.source|basename }}'
+        format: '{{ img.format|default("qcow2") }}'
+        name: '{{ img.name }}'
+        raw: '{{ img.source|basename|splitext|first }}.raw'
+      with_items: '{{ images }}'
+      loop_control:
+        loop_var: img
+
+
 - name: start VMs
   hosts: localhost
   gather_facts: no
@@ -8,15 +28,18 @@
     # uzh-only network
     network: c86b320c-9542-4032-a951-c8a068894cc2
 
-  vars_files:
-    - conf.yml
-
   vars_prompt:
     - name: 'keypair'
       prompt: 'Name of OpenStack keypair to authorize for SSH connections'
       private: no
 
   tasks:
+
+    # we cannot use `vars_files:` for this, as the file is parsed at Ansible
+    # startup time, before the above play gets to modify it
+    - include_vars:
+        file: conf.yml
+
     - include: 'tasks/start.yml'
       vars:
         uuid: '{{ img.uuid }}'
@@ -35,10 +58,12 @@
   gather_facts: yes
   become: yes
 
-  vars_files:
-    - conf.yml
-
   tasks:
+    # we cannot use `vars_files:` for this, as the file is parsed at Ansible
+    # startup time, before the above play gets to modify it
+    - include_vars:
+        file: conf.yml
+
     # - name: print info for debugging
     #   debug:
     #     var: hostvars
