@@ -4,3 +4,9 @@
   yum:
     name: '*'
     state: latest
+
+
+- name: Ensure `/usr/bin/lsb_release` is installed
+  yum:
+    name: '/usr/bin/lsb_release'
+    state: present
