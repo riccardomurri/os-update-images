@@ -119,6 +119,8 @@
           --property owner_id \
           --property user_id \
           --property ramdisk_id \
+          --property hw_scsi_model \
+          --property hw_disk_bus \
           "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
       become: no
       delegate_to: localhost
