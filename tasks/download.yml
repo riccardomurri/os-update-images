@@ -28,6 +28,7 @@
         -f value -c ID \
         | head -n 1
   register: image_list
+  failed_when: 'image_list.stderr != ""'
 
 
 - name: Set image UUID from `openstack image list`
@@ -54,6 +55,7 @@
         -f yaml -c id '{{name}} [upstream]' \
         | cut -c5-  # extract UUID
   register: image_create
+  failed_when: 'image_create.stderr != ""'
   when: 'image_list.stdout|length == 0'
 
 
