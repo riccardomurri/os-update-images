@@ -19,30 +19,40 @@
 # Additional attributes are allowed but will be ignored.
 
 images:
+  #
+  # Source URLs gotten from: https://www.rdoproject.org/resources/image-resources/
+  #
 
   - name: CentOS 6
     source: http://cloud.centos.org/centos/6/images/CentOS-6-x86_64-GenericCloud.qcow2
+    uuid: 
     user: centos
+    use_virtio_scsi: yes
 
   - name: CentOS 7
     source: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
     user: centos
+    use_virtio_scsi: yes
 
   - name: Debian 8
     source: http://cdimage.debian.org/cdimage/openstack/current-8/debian-8-openstack-amd64.qcow2
     user: debian
+    use_virtio_scsi: no
 
   - name: Debian 9
     source:  http://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2
     user: debian
+    use_virtio_scsi: no
 
   - name: Ubuntu 14.04
     source: https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
     user: ubuntu
+    use_virtio_scsi: yes
 
   - name: Ubuntu 16.04
     source: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
     user: ubuntu
+    use_virtio_scsi: yes
 
 
   # The following is an example of how to re-create/update

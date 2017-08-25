@@ -15,6 +15,7 @@
         format: '{{ img.format|default("qcow2") }}'
         name: '{{ img.name }}'
         raw: '{{ img.source|basename|splitext|first }}.raw'
+        use_virtio_scsi: '{{ img.use_virtio_scsi|default("yes") }}'
       with_items: '{{ images }}'
       loop_control:
         loop_var: img

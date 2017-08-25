@@ -44,8 +44,10 @@
     openstack image create \
         --property 'md5sum={{image_md5sum.stdout}}' \
         --property 'source={{source}}' \
+        {% if use_virtio_scsi -%}
         --property hw_scsi_model=virtio-scsi \
         --property hw_disk_bus=scsi \
+        {%- endif %}
         --disk-format raw \
         --container-format bare \
         --file '{{raw}}' \
