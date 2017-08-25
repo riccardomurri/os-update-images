@@ -12,7 +12,7 @@
     qemu-img convert -f {{format}} -O raw {{dest}} {{raw}}
   args:
     creates: '{{raw}}'
-  when: '"{{ format }}" != "raw"'
+  when: 'format != "raw"'
 
 
 - name: Compute MD5 checksum of raw image file
