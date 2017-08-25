@@ -49,4 +49,4 @@
       done
   # cannot use `{{ ansible_distribution }}` or the like here, since facts were
   # not gathered about this host -- resort to a crude identification mechanism
-  when: '"user in ["debian", "ubuntu"]'
+  when: 'user in ["debian", "ubuntu"]'
