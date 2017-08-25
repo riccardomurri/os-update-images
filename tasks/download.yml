@@ -59,7 +59,7 @@
   when: 'image_list.stdout|length == 0'
 
 
-- name: Set image UUID from `opestack image create`
+- name: Set image UUID from `openstack image create`
   set_fact:
     image_uuid: '{{image_create.stdout}}'
   when: 'image_list.stdout|length == 0'
