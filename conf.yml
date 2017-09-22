@@ -25,7 +25,7 @@ images:
 
   - name: CentOS 6
     source: http://cloud.centos.org/centos/6/images/CentOS-6-x86_64-GenericCloud.qcow2
-    uuid: 
+    uuid:
     user: centos
     use_virtio_scsi: yes
 
@@ -40,7 +40,7 @@ images:
     use_virtio_scsi: no
 
   - name: Debian 9
-    source:  http://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2
+    source: http://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2
     user: debian
     use_virtio_scsi: no
 
