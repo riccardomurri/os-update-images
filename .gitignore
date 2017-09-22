@@ -1,2 +1,10 @@
-*.retry
 /.venv
+/.workon
+
+# image files
+*.img
+*.qcow2
+*.raw
+
+# Ansible leftovers
+*.retry
