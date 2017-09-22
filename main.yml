@@ -1,6 +1,8 @@
 ---
 
 - name: download official images
+  tags:
+    - download
   hosts: localhost
   gather_facts: no
 
@@ -22,6 +24,8 @@
 
 
 - name: start VMs
+  tags:
+    - start
   hosts: localhost
   gather_facts: no
 
@@ -55,6 +59,8 @@
 # this is a separate play so that the `gather_facts:` step runs on all the VMs
 # that were created in the "start" phase
 - name: update VM image
+  tags:
+    - update
   hosts: targets
   gather_facts: yes
   become: yes
@@ -89,6 +95,8 @@
 # we want vars like `ansible_distribution_version` to be up-to-date
 # in case the last steps changed it (e.g., minor release upgrade)
 - name: make VM snapshot
+  tags:
+    - snapshot
   hosts: targets
   gather_facts: yes
 
@@ -142,6 +150,8 @@
 
 
 - name: stop VMs
+  tags:
+    - stop
   hosts: localhost
   gather_facts: no
 
