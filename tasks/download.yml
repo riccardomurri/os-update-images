@@ -68,6 +68,6 @@
 - name: Write image UUID back to conf file
   lineinfile:
     destfile: conf.yml
-    insertafter: '^    source: {{source}}'
+    insertafter: '^    source: *{{source}}'
     line: '    uuid: {{image_uuid}}'
     backup: yes
