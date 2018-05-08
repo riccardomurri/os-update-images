@@ -25,7 +25,6 @@ images:
 
   - name: CentOS 6
     source: http://cloud.centos.org/centos/6/images/CentOS-6-x86_64-GenericCloud.qcow2
-    uuid:
     user: centos
     use_virtio_scsi: yes
 
