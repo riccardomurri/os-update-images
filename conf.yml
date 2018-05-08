@@ -61,9 +61,9 @@ images:
 
   # The following is an example of how to re-create/update
   # a VM image that installs additional SW on top of the base OS.
-  #
-  # - name: EasyBuild / Ubuntu 16.04
-  #   uuid: 27569aaf-38b1-4df2-a4c3-472e93b7bc11
+
+  # - name: Ubuntu 16.04 for S3IT managed VMs
+  #   source: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
   #   user: ubuntu
-  #   extra_plays: 'easybuild.yml'
-  #   extra_prefix`: 'EasyBuild / '
+  #   extra_plays: 's3it-pet-base-os.yml'
+  #   extra_prefix`: 'S3IT pets / '
