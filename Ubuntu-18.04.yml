@@ -1,0 +1,10 @@
+---
+
+- include: '{{ ansible_distribution }}.yml'
+
+- name: disable unattended upgrades (Ubuntu 18.04)
+  # alternatively, we could mask systemd unit `apt-daily.service`
+  copy:
+    dest: '/etc/apt/apt.conf.d/99disable-apt-systemd-daily'
+    content: |
+      APT::Periodic::Enable "0";
