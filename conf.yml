@@ -33,11 +33,6 @@ images:
     user: centos
     use_virtio_scsi: yes
 
-  - name: Debian 8
-    source: http://cdimage.debian.org/cdimage/openstack/current-8/debian-8-openstack-amd64.qcow2
-    user: debian
-    use_virtio_scsi: no
-
   - name: Debian 9
     source: http://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2
     user: debian
