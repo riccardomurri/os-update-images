@@ -28,6 +28,7 @@ openstack server list \
     | tr -d '|' \
     | tr -d '*' \
     | (while read uuid name _ net image; do
+           set +e
            echo === $image ===;
            ip_addr=$(echo $net | cut -d= -f2);
            case "$image" in
