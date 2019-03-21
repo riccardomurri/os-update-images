@@ -7,6 +7,10 @@
 # run basic Linux commands.
 #
 
+# first, rename old images:
+#
+#     (sc admin; o image list --public | fgrep '***' | cut -d'|' -f2,3 | (while read uuid bar name; do o image set $uuid --name "$(echo $name | tr -d '*')"; done))
+
 set -e
 ansible-playbook main.yml -e keypair="${LOGNAME}" -e prefix=""'*** '""
 
