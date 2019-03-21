@@ -10,7 +10,7 @@
     - conf.yml
 
   tasks:
-    - include: 'tasks/download.yml'
+    - include_tasks: 'tasks/download.yml'
       vars:
         source: '{{ img.source }}'
         dest: '{{ img.source|basename }}'
@@ -45,7 +45,7 @@
     - include_vars:
         file: conf.yml
 
-    - include: 'tasks/start.yml'
+    - include_tasks: 'tasks/start.yml'
       vars:
         uuid: '{{ img.uuid }}'
         user: '{{ img.user }}'
@@ -75,7 +75,7 @@
     #   debug:
     #     var: hostvars
 
-    - include: '{{ play }}'
+    - include_tasks: '{{ play }}'
       loop_control:
         loop_var: 'play'
       with_first_found:
@@ -85,7 +85,7 @@
         - '{{ ansible_os_family }}.yml'
         - 'default.yml'
 
-    - include: '{{ play }}'
+    - include_tasks: '{{ play }}'
       loop_control:
         loop_var: 'play'
       with_items: '{{ extra_plays }}'
@@ -108,8 +108,7 @@
 
   tasks:
 
-    - include: 'tasks/cleanup.yml'
-      static: yes
+    - import_tasks: 'tasks/cleanup.yml'
       become: yes
 
     - name: make VM snapshot

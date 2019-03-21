@@ -1,6 +1,6 @@
 ---
 
-- include: '{{ ansible_os_family }}.yml'
+- include_tasks: '{{ ansible_os_family }}.yml'
 
 
 - name: install packages (Ubuntu)
