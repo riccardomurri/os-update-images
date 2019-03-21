@@ -38,11 +38,6 @@ images:
     user: debian
     use_virtio_scsi: no
 
-  - name: Ubuntu 14.04
-    source: https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
-    user: ubuntu
-    use_virtio_scsi: yes
-
   - name: Ubuntu 16.04
     source: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
     user: ubuntu
