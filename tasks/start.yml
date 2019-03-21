@@ -41,7 +41,7 @@
           if ssh -o UserKnownHostsFile=/dev/null \
               -o StrictHostKeyChecking=no \
               {{ user }}@{{ openstack_servers[0].accessIPv4 }} \
-              'command -v apt-get && sudo apt-get install -y aptitude python; exit 0';
+              'command -v apt-get && sudo apt-get install -y python; exit 0';
           then
               break
           fi
