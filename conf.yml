@@ -48,6 +48,13 @@ images:
     user: ubuntu
     use_virtio_scsi: yes
 
+  - name: Ubuntu 18.04 with CUDA
+    source: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+    user: ubuntu
+    use_virtio_scsi: yes
+    extra_plays: 'gpus.yml'
+    extra_prefix: 'CUDA 10.1 on '
+
 
   # The following is an example of how to re-create/update
   # a VM image that installs additional SW on top of the base OS.

@@ -1,0 +1,100 @@
+---
+#
+# Install CUDA toolkit and runtime
+#
+
+- name: Set playbook parameters
+  set_fact:
+    # Version of CUDA to install.
+    cuda_version_major: '10'
+    cuda_version_minor: '1'
+    # GPG key used to sign CUDA packages
+    cuda_apt_key: '7FA2AF80'
+
+
+- name: Install software prerequisites
+  package:
+    name:
+      - 'linux-headers-generic'
+      - 'gcc'
+    state: present
+
+
+- name: Add signing key for CUDA repository
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: '{{cuda_apt_key}}'
+
+
+- name: Set auxiliary variables
+  set_fact:
+    _cuda_repo_ending: '{{ ansible_distribution|lower }}{{ ansible_distribution_version.replace(".", "") }}'
+    _cuda_ko_regex: '^updates/dkms/nvidia_.+\.ko(.xz)?:'
+
+
+- name: add CUDA APT repository
+  apt_repository:
+    # For some reason, APT complains that nVidia CUDA packages are
+    # "unauthenticated"; fix this by marking the repository as
+    # "trusted" (although this is questionable security practice...)
+    repo: 'deb [trusted=yes] http://developer.download.nvidia.com/compute/cuda/repos/{{ _cuda_repo_ending }}/x86_64 /'
+    state: present
+  register: _cuda_add_apt_repo1
+
+
+- name: add cuDNN APT repository
+  apt_repository:
+    repo: 'deb http://developer.download.nvidia.com/compute/machine-learning/repos/{{ _cuda_repo_ending }}/x86_64 /'
+    state: present
+  register: _cuda_add_apt_repo2
+
+
+# this is run as task and not as a handler, since handlers are all
+# executed after *all* tasks in the play have run, and we need the
+# package cache to be up-to-date immediately for subsequent install
+# tasks to succeed...
+- name: update APT cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
+  when: '_cuda_add_apt_repo1 is changed or _cuda_add_apt_repo2 is changed'
+
+
+- name: Ensure the `nouveau` kernel module is not loaded
+  modprobe:
+    name: nouveau
+    state: absent
+
+
+- name: Blacklist the `nouveau` kernel module
+  kernel_blacklist:
+    name: nouveau
+    state: present
+
+
+- name: Install CUDA packages
+  package:
+    name: 'cuda-{{cuda_version_major}}-{{cuda_version_minor}}'
+    state: latest
+
+
+- name: Install additional GPU-related packages
+  package:
+    name:
+      - libcudnn7-dev
+      # for easy installing tensorflow and pytorch
+      - python-pip
+      - python-pip3
+    state: latest
+
+
+- name: Add CUDA binaries to PATH
+  template:
+    dest: '/etc/profile.d/{{item}}'
+    src: 'templates/etc/profile.d/{{item}}.j2'
+    mode: 0444
+    owner: root
+    group: root
+  loop:
+    - 'cuda.sh'
+    - 'cuda.csh'
