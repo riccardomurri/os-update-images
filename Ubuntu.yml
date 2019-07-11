@@ -5,12 +5,11 @@
 
 - name: install packages (Ubuntu)
   apt:
-    name: '{{ item }}'
+    name:
+      - python
+      - python2.7
+      - language-pack-en
+      - language-pack-de
+      - language-pack-fr
+      - language-pack-it
     state: latest
-  with_items:
-    - python
-    - python2.7
-    - language-pack-en
-    - language-pack-de
-    - language-pack-fr
-    - language-pack-it

@@ -28,12 +28,11 @@
 
 - name: install packages (Debian/Ubuntu)
   apt:
-    name: '{{ item }}'
+    name:
+      - python
+      - python2.7
+      - tzdata
     state: latest
-  with_items:
-    - python
-    - python2.7
-    - tzdata
 
 
 - name: Set timezone, step 2 (Debian/Ubuntu)
