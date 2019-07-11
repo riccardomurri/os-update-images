@@ -107,6 +107,10 @@
       private: no
 
   tasks:
+    # we cannot use `vars_files:` for this, as the file is parsed at Ansible
+    # startup time, before the above play gets to modify it
+    - include_vars:
+        file: conf.yml
 
     - import_tasks: 'tasks/cleanup.yml'
       become: yes
