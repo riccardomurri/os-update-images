@@ -38,6 +38,11 @@ images:
     user: debian
     use_virtio_scsi: no
 
+  - name: Debian 10
+    source: http://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2
+    user: debian
+    use_virtio_scsi: yes
+
   - name: Ubuntu 16.04
     source: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
     user: ubuntu
