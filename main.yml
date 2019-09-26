@@ -131,7 +131,7 @@
 
     - name: make VM snapshot
       shell: |
-        nova image-create --poll "sc-update-images-{{ uuid_of[name] }}" "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
+        nova image-create --poll "sc-update-images-{{ uuid_of[name] }}-{{ name }}" "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
       become: no
       delegate_to: localhost
 
@@ -185,7 +185,7 @@
 
     - name: stop VM instance
       os_server:
-        name: 'sc-update-images-{{ uuid_of[img.name] }}'
+        name: 'sc-update-images-{{ uuid_of[img.name] }}-{{ name }}'
         state: absent
         wait: yes
       with_items: '{{ images }}'
