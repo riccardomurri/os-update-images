@@ -10,6 +10,12 @@
     - conf.yml
 
   tasks:
+    - name: create new file `downloaded.yml`
+      copy:
+        dest: 'vars/downloaded.yml'
+        content: |
+          ---
+
     - include_tasks: 'tasks/download.yml'
       vars:
         source: '{{ img.source }}'
@@ -45,9 +51,13 @@
     - include_vars:
         file: conf.yml
 
+    - include_vars:
+        file: 'downloaded.yml'
+        name: uuid_of
+
     - include_tasks: 'tasks/start.yml'
       vars:
-        uuid: '{{ img.uuid }}'
+        uuid: '{{ uuid_of[img.name] }}'
         user: '{{ img.user }}'
         extra_plays: '{{ img.extra_plays|default([]) }}'
         extra_prefix: '{{ img.extra_prefix|default("") }}'
@@ -112,12 +122,16 @@
     - include_vars:
         file: conf.yml
 
+    - include_vars:
+        file: 'downloaded.yml'
+        name: uuid_of
+
     - import_tasks: 'tasks/cleanup.yml'
       become: yes
 
     - name: make VM snapshot
       shell: |
-        nova image-create --poll "sc-update-images-{{ uuid }}" "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
+        nova image-create --poll "sc-update-images-{{ uuid_of[name] }}" "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
       become: no
       delegate_to: localhost
 
@@ -163,9 +177,17 @@
 
   tasks:
 
+    # we cannot use `vars_files:` for this, as the file is parsed at Ansible
+    # startup time, before the above play gets to modify it
+    - include_vars:
+        file: 'downloaded.yml'
+        name: uuid_of
+
     - name: stop VM instance
       os_server:
-        name: 'sc-update-images-{{ item.uuid }}'
+        name: 'sc-update-images-{{ uuid_of[img.name] }}'
         state: absent
         wait: yes
       with_items: '{{ images }}'
+      loop_control:
+        loop_var: img
