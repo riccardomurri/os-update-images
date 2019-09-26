@@ -11,8 +11,11 @@
 #
 #     (sc admin; o image list --public | fgrep '***' | cut -d'|' -f2,3 | (while read uuid bar name; do o image set $uuid --name "$(echo $name | tr -d '*')"; done))
 
+KEYNAME=$1
+[ -z "$KEYNAME" ] && KEYNAME=$LOGNAME
+
 set -e
-ansible-playbook main.yml -e keypair="${LOGNAME}" -e prefix=""'*** '""
+ansible-playbook main.yml -e keypair="${KEYNAME}" -e prefix=""'*** '""
 
 openstack image list --private \
     | fgrep ' ***' \
