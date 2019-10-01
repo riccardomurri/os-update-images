@@ -5,7 +5,6 @@
     name: 'sc-update-images-{{ uuid }}-{{ name }}'
     state: present
     wait: yes
-
     image: '{{ uuid }}'
     boot_from_volume: no
     flavor: 1cpu-4ram-hpc
@@ -17,9 +16,9 @@
     server: 'sc-update-images-{{ uuid }}-{{ name }}'
     detailed: no
 
-# - name: print info for debugging
-#   debug:
-#     var: openstack_servers
+#- name: print info for debugging
+#  debug:
+#    var: openstack_servers
 
 - name: Add VM to inventory
   add_host:
@@ -28,6 +27,8 @@
     groups: 'targets'
     ansible_ssh_user: '{{ user }}'
     ansible_user: '{{ user }}'
+    instance_uuid: '{{ openstack_servers[0].id }}'
+    # following is the uuid of the image
     uuid: '{{ uuid }}'
     extra_plays: '{{ extra_plays }}'
     extra_prefix: '{{ extra_prefix }}'

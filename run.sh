@@ -25,7 +25,7 @@ openstack image list --private \
                      --wait \
                      --image $uuid \
                      --flavor 1cpu-4ram-hpc \
-                     --key-name rmurri \
+                     --key-name $KEYNAME \
                      --nic net-id=uzh-only \
                      test-$uuid;
        done)
