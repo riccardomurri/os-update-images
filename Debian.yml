@@ -30,7 +30,6 @@
   apt:
     name:
       - python
-      - python2.7
       - tzdata
     state: latest
 
