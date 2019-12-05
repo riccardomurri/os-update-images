@@ -2,32 +2,33 @@
 
 - name: start VM instance
   os_server:
-    name: 'sc-update-images-{{ uuid }}-{{ name }}'
+    name: 'os-update-images-{{ uuid }}-{{ name }}'
     state: present
     wait: yes
     image: '{{ uuid }}'
     boot_from_volume: no
-    flavor: 1cpu-4ram-hpc
+    flavor: '{{ flavor }}'
     key_name: '{{ keypair }}'
     network: '{{ network }}'
 
 - name: gather VM facts
-  os_server_facts:
-    server: 'sc-update-images-{{ uuid }}-{{ name }}'
+  os_server_info:
+    server: 'os-update-images-{{ uuid }}-{{ name }}'
     detailed: no
+  register: vm_facts
 
-#- name: print info for debugging
-#  debug:
-#    var: openstack_servers
+- name: print info for debugging
+  debug:
+    var: vm_facts
 
 - name: Add VM to inventory
   add_host:
     # `hostname` is the *IP address* of the new host
-    hostname: '{{ openstack_servers[0].accessIPv4 }}'
+    hostname: '{{ vm_facts.openstack_servers[0].accessIPv4 }}'
     groups: 'targets'
     ansible_ssh_user: '{{ user }}'
     ansible_user: '{{ user }}'
-    instance_uuid: '{{ openstack_servers[0].id }}'
+    instance_uuid: '{{ vm_facts.openstack_servers[0].id }}'
     # following is the uuid of the image
     uuid: '{{ uuid }}'
     extra_plays: '{{ extra_plays }}'

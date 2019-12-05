@@ -52,7 +52,7 @@
         file: 'downloaded.yml'
         name: uuid_of
 
-    - include_tasks: 'tasks/start.yml'
+    - include_tasks: 'tasks/{{cloud}}/start.yml'
       vars:
         name: '{{ img.name }}'
         uuid: '{{ uuid_of[img.name] }}'
@@ -127,41 +127,8 @@
     - import_tasks: 'tasks/cleanup.yml'
       become: yes
 
-    - name: make VM snapshot
-      shell: |
-        nova image-create --poll "{{ instance_uuid }}" "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
-      become: no
-      delegate_to: localhost
-
-    # command `openstack image unset` fails if some properties are
-    # *not* already set on the image; so split its invocation in two
-    # parts: remove properties that are for sure set on any image, and
-    # remove properties that are only set on some -- ignore errors in
-    # this latter case
-
-    - name: turn snapshot back into image (1/2)
-      become: no
-      shell: |
-        openstack image unset \
-          --property image_location \
-          --property image_state \
-          --property image_type \
-          --property kernel_id \
-          --property owner_id \
-          --property user_id \
-          --property ramdisk_id \
-          "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
-      delegate_to: localhost
-
-    - name: turn snapshot back into image (2/2)
-      become: no
-      shell: |
-        openstack image unset \
-          --property hw_scsi_model \
-          --property hw_disk_bus \
-          "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})";
-      ignore_errors: yes
-      delegate_to: localhost
+    - name: Run cloud-specific snapshot tasks
+      include_tasks: 'tasks/{{cloud}}/snapshot.yml'
 
 
 - name: stop VMs
@@ -181,11 +148,5 @@
         file: 'downloaded.yml'
         name: uuid_of
 
-    - name: stop VM instance
-      os_server:
-        name: 'sc-update-images-{{ uuid_of[img.name] }}-{{ img.name }}'
-        state: absent
-        wait: yes
-      with_items: '{{ images }}'
-      loop_control:
-        loop_var: img
+    - name: Run cloud-specific snapshot tasks
+      include_tasks: 'tasks/{{cloud}}/stop.yml'

@@ -1,0 +1,13 @@
+---
+#
+# Stop a given instance.
+#
+
+- name: stop VM instance
+  os_server:
+    name: 'os-update-images-{{ uuid_of[img.name] }}-{{ img.name }}'
+    state: absent
+    wait: yes
+  with_items: '{{ images }}'
+  loop_control:
+    loop_var: img
