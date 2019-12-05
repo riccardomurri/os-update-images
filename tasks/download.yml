@@ -2,17 +2,17 @@
 
 - name: Download image from {{source}}
   get_url:
-    url: '{{source}}'
-    dest: './{{dest}}'
+    url: '{{source_url}}'
+    dest: './{{source_file}}'
     backup: yes
 
 
-- name: Convert image file {{dest}} to RAW format
+- name: Convert image file {{source_file}} to {{dest_format}} format
   command: |
-    qemu-img convert -f {{format}} -O raw {{dest}} {{raw}}
+    qemu-img convert -f {{source_format}} -O {{dest_format}} {{source_file}} {{dest_file}}
   args:
-    creates: '{{raw}}'
-  when: 'format != "raw"'
+    creates: '{{dest_file}}'
+  when: 'dest_format != source_format'
 
 
 - name: Compute MD5 checksum of raw image file
@@ -30,6 +30,12 @@
   register: image_list
   failed_when: 'image_list.stderr != ""'
 
+- name: Copy image file {{source_file}} to {{dest_file}}
+  file:
+    state: hard
+    src: '{{ source_file }}'
+    dest: '{{ dest_file }}'
+  when: 'dest_format == source_format'
 
 - name: Set image UUID from `openstack image list`
   set_fact:

@@ -18,11 +18,12 @@
 
     - include_tasks: 'tasks/download.yml'
       vars:
-        source: '{{ img.source }}'
-        dest: '{{ img.source|basename }}'
-        format: '{{ img.format|default("qcow2") }}'
+        source_url: '{{ img.source }}'
+        source_file: '{{ img.source|basename }}'
+        source_format: '{{ img.format|default("qcow2") }}'
         name: '{{ img.name }}'
-        raw: '{{ img.source|basename|splitext|first }}.raw'
+        dest_file: '{{ img.source|basename|splitext|first }}.{{ dest_format }}'
+        dest_format: '{{ format|default("qcow2") }}'
         use_virtio_scsi: '{{ img.use_virtio_scsi|default("yes") }}'
       with_items: '{{ images }}'
       loop_control:
