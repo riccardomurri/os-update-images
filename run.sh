@@ -24,7 +24,7 @@ openstack image list --private \
            openstack server create \
                      --wait \
                      --image $uuid \
-                     --flavor 1cpu-4ram-hpc \
+                     --flavor m1.small \
                      --key-name $KEYNAME \
                      --nic net-id=uzh-only \
                      test-$uuid;
