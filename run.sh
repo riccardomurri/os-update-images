@@ -39,9 +39,10 @@ openstack server list \
            echo === $image ===;
            ip_addr=$(echo $net | cut -d= -f2);
            case "$image" in
-               Ubuntu*) u=ubuntu;;
-               Debian*) u=debian;;
-               CentOS*) u=centos;;
+               *Ubuntu*) u=ubuntu;;
+               *Debian*) u=debian;;
+               *CentOS*) u=centos;;
+               
            esac;
            set -x;
            ssh -n \
