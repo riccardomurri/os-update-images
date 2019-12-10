@@ -44,17 +44,17 @@ images:
     use_virtio_scsi: yes
 
   - name: Ubuntu 16.04
-    source: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+    source: https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-disk1.vmdk
     user: ubuntu
     use_virtio_scsi: yes
 
   - name: Ubuntu 18.04
-    source: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+    source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.vmdk
     user: ubuntu
     use_virtio_scsi: yes
 
   - name: Ubuntu 18.04 with CUDA
-    source: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+    source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.vmdk
     user: ubuntu
     use_virtio_scsi: yes
     extra_plays: 'gpus.yml'
