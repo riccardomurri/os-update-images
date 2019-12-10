@@ -8,7 +8,7 @@
 
 - name: upgrade all packages (Debian/Ubuntu)
   apt:
-    upgrade: yes
+    upgrade: 'safe'
 
 
 - name: Set timezone, step 1 (Debian/Ubuntu)
