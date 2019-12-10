@@ -59,6 +59,7 @@
         user: '{{ img.user }}'
         extra_plays: '{{ img.extra_plays|default([]) }}'
         extra_prefix: '{{ img.extra_prefix|default("") }}'
+        install_python2: '{{ img.install_python2|default("no") }}'
       with_items: '{{ images }}'
       loop_control:
         loop_var: img
