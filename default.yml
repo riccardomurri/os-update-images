@@ -5,13 +5,13 @@
 - name: Use ETHZ HTTP proxy for HTTP/FTP access (CentOS/RHEL)
   lineinfile:
     path: /etc/environment
-    line: "{{item.proto}}_proxy={{item.scheme}}://proxy.ethz.ch:3128/"
+    line: "{{item}}_proxy=http://proxy.ethz.ch:3128/"
     state: present
     create: yes
   loop:
-    - { proto: ftp,   scheme: http }
-    - { proto: http,  scheme: http }
-    - { proto: https, scheme: https }
+    - ftp
+    - http
+    - https
 
 
 - name: No proxy for local domains (CentOS/RHEL)
