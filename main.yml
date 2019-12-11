@@ -24,6 +24,7 @@
         name: '{{ img.name }}'
         dest_file: '{{ img.source|basename|splitext|first }}.{{ dest_format }}'
         dest_format: '{{ format|default("qcow2") }}'
+        properties: '{{ img.properties|default({}) }}'
         use_virtio_scsi: '{{ img.use_virtio_scsi|default("yes") }}'
       with_items: '{{ images }}'
       loop_control:

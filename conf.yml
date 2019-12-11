@@ -50,11 +50,16 @@ images:
     # older Ansible releases needed Python 2.7 on the target host,
     # which is not part of the std Ubuntu 16.04 image
     #install_python2: yes
+    properties:
+      vmware_ostype: 'ubuntu64Guest'
 
   - name: Ubuntu 18.04
     source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.vmdk
     user: ubuntu
     use_virtio_scsi: yes
+    properties:
+      img_config_drive: mandatory
+      vmware_ostype: 'ubuntu64Guest'
 
   - name: Ubuntu 18.04 with CUDA
     source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.vmdk
