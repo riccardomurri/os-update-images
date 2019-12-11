@@ -10,12 +10,10 @@
   delegate_to: localhost
 
 # command `openstack image unset` fails if some properties are
-# *not* already set on the image; so split its invocation in two
-# parts: remove properties that are for sure set on any image, and
-# remove properties that are only set on some -- ignore errors in
-# this latter case
+# *not* already set on the image; so just ignore errors, presuming
+# this latter case.
 
-- name: turn snapshot back into image (1/2)
+- name: turn snapshot back into image
   become: no
   shell: |
     openstack image unset \
@@ -26,13 +24,12 @@
       --property owner_id \
       --property user_id \
       --property ramdisk_id \
-      "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
-  delegate_to: localhost
-
-- name: turn snapshot back into image (2/2)
-  become: no
-  shell: |
-    openstack image unset \
+      {# needed on ETHZ VIO -#}
+      --property base_image_ref \
+      --property boot_roles \
+      --property image_type \
+      --property instance_uuid \
+      {# optionally set by this script -#}
       --property hw_scsi_model \
       --property hw_disk_bus \
       "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})";
