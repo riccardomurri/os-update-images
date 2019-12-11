@@ -22,10 +22,17 @@
     var: vm_facts
   when: 'debug|default(False)|bool'
 
+- name: find out VM IPv4 address
+  set_fact:
+    # depending on the configuration, OpenStack may make the actual
+    # IPv4 address available in one of several variables -- use the
+    # first one which is not the empty string
+    vm_ip_addr: '{{ vm_facts.openstack_servers[0].accessIPv4 or vm_facts.openstack_servers[0].public_v4 or vm_facts.openstack_servers[0].private_v4 }}'
+
 - name: Add VM to inventory
   add_host:
     # `hostname` is the *IP address* of the new host
-    hostname: '{{ vm_facts.openstack_servers[0].accessIPv4 }}'
+    hostname: '{{ vm_ip_addr }}'
     groups: 'targets'
     ansible_ssh_user: '{{ user }}'
     ansible_user: '{{ user }}'
@@ -43,7 +50,7 @@
       while true; do
           if ssh -o UserKnownHostsFile=/dev/null \
               -o StrictHostKeyChecking=no \
-              {{ user }}@{{ openstack_servers[0].accessIPv4 }} \
+              {{ user }}@{{ vm_ip_addr }} \
               'command -v apt-get && sudo apt-get install -y python; exit 0';
           then
               break
