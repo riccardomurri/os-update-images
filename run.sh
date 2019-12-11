@@ -11,13 +11,16 @@
 #
 #     (sc admin; o image list --public | fgrep '***' | cut -d'|' -f2,3 | (while read uuid bar name; do o image set $uuid --name "$(echo $name | tr -d '*')"; done))
 
-KEYNAME=$1
-[ -z "$KEYNAME" ] && KEYNAME=$LOGNAME
+keypair=$1
+if [ -z "$keypair" ]; then
+    keypair=$LOGNAME
+fi
 
 set -e
-ansible-playbook main.yml -e keypair="${KEYNAME}" -e prefix=""'*** '""
+ansible-playbook main.yml -e keypair="${keypair}" -e prefix=""'*** '""
 
-openstack image list --private \
+#openstack image list --private \
+openstack image list \
     | fgrep ' ***' \
     | tr -d '|' \
     | (while read uuid name _ ; do
@@ -25,32 +28,31 @@ openstack image list --private \
                      --wait \
                      --image $uuid \
                      --flavor m1.small \
-                     --key-name $KEYNAME \
-                     --nic net-id=uzh-only \
+                     --key-name $keypair \
+                     --nic net-id=DC_2519 \
                      test-$uuid;
        done)
 
-openstack server list \
+# `openstack` always lists fields in some internally-specified order,
+# instead of the one used in the command line
+openstack server list -c ID -c Name -c Networks -c Image \
     | fgrep ' test-' \
-    | tr -d '|' \
-    | tr -d '*' \
-    | (while read uuid name _ net image; do
-           set +e
-           echo === $image ===;
-           ip_addr=$(echo $net | cut -d= -f2);
-           case "$image" in
-               *Ubuntu*) u=ubuntu;;
-               *Debian*) u=debian;;
-               *CentOS*) u=centos;;
-               
-           esac;
-           set -x;
-           ssh -n \
-               -o UserKnownHostsFile=/dev/null \
-               -o StrictHostKeyChecking=no \
-               $u@$ip_addr lsb_release -a;
-           set +x;
-           openstack server delete $uuid;
+    | (while IFS=' | ' read _ uuid name nets image; do
+             ipv4_addr=$(echo "$nets"| egrep -o '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+');
+             set +e
+             echo "=== $image ===";
+             case "$image" in
+                 *Ubuntu*) u=ubuntu;;
+                 *Debian*) u=debian;;
+                 *CentOS*) u=centos;;
+             esac;
+             set -x;
+             ssh -n \
+                 -o UserKnownHostsFile=/dev/null \
+                 -o StrictHostKeyChecking=no \
+                 $u@$ipv4_addr lsb_release -a;
+             set +x;
+             openstack server delete $uuid;
        done)
 
 echo "All images updated."
