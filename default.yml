@@ -17,6 +17,6 @@
 - name: No proxy for local domains (CentOS/RHEL)
   lineinfile:
     path: /etc/environment
-    line: "no_proxy=localhost,127.0.0.1,169.254.169.254,.ethz.ch"
+    line: "no_proxy=localhost,127.0.0.1,169.254.169.254,.ethz.ch,172.31.33.64/26"
     state: present
     create: yes
