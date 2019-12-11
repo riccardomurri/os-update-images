@@ -53,6 +53,8 @@ openstack server list \
            openstack server delete $uuid;
        done)
 
+echo "All images updated."
+
 # at end, publish images::
 #
 #     openstack image set --public --project admin
