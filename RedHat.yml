@@ -1,5 +1,23 @@
 ---
 
+- import_tasks: 'default.yml'
+
+
+- name: Use ETHZ' CentOS package mirror (CentOS/RHEL)
+  replace:
+    path: /etc/yum.repos.d/CentOS-Base.repo
+    regexp: '^ *#? *(mirrorlist=|baseurl=http://mirror.centos.org).*$'
+    replace: 'baseurl=http://mirror.ethz.ch/centos/$releasever/os/$basearch/'
+  loop:
+    - CentOS-Base.repo
+    # - CentOS-Debuginfo.repo
+    # - CentOS-Sources.repo
+    # - CentOS-fasttrack.repo
+    # - CentOS-CR.repo
+    # - CentOS-Media.repo
+    # - CentOS-Vault.repo
+
+
 - name: upgrade all packages (CentOS/RHEL)
   yum:
     name: '*'

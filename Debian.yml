@@ -1,10 +1,6 @@
 ---
 
-- name: update packages list (Debian/Ubuntu)
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
-    autoclean: yes
+- import_tasks: 'default.yml'
 
 
 - name: upgrade all packages (Debian/Ubuntu)
