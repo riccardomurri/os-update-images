@@ -20,6 +20,7 @@
 - name: print info for debugging
   debug:
     var: vm_facts
+  when: 'debug|default(False)|bool'
 
 - name: Add VM to inventory
   add_host:
