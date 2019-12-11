@@ -72,7 +72,8 @@
   tags:
     - update
   hosts: targets
-  gather_facts: yes
+  # gater facts later, once we know the VM is up and running
+  gather_facts: no
   become: yes
 
   tasks:
@@ -80,6 +81,13 @@
     # startup time, before the above play gets to modify it
     - include_vars:
         file: conf.yml
+
+    - name: Wait up to 60s for VM to accept SSH connections
+      wait_for_connection:
+        timeout: 60
+
+    - name: Gather facts
+      setup:
 
     # - name: print info for debugging
     #   debug:
