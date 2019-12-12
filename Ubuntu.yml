@@ -1,6 +1,7 @@
 ---
 
-- include_tasks: '{{ ansible_os_family }}.yml'
+- name: Include tasks common to all Debian-derivatives.
+  import_tasks: 'Debian.yml'
 
 
 - name: install packages (Ubuntu)

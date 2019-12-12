@@ -101,7 +101,8 @@
     #   debug:
     #     var: hostvars
 
-    - include_tasks: '{{ play }}'
+    - name: Include OS-specific tasks
+      include_tasks: '{{ play }}'
       loop_control:
         loop_var: 'play'
       with_first_found:
@@ -111,7 +112,8 @@
         - '{{ ansible_os_family }}.yml'
         - 'default.yml'
 
-    - include_tasks: '{{ play }}'
+    - name: Include extra tasks
+      include_tasks: '{{ play }}'
       loop_control:
         loop_var: 'play'
       with_items: '{{ extra_plays }}'

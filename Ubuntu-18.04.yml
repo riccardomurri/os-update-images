@@ -1,6 +1,7 @@
 ---
 
-- include_tasks: '{{ ansible_distribution }}.yml'
+- name: Include tasks common to all Ubuntu versions.
+  import_tasks: 'Ubuntu.yml'
 
 - name: disable unattended upgrades (Ubuntu 18.04)
   # alternatively, we could mask systemd unit `apt-daily.service`
