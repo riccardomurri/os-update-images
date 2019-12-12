@@ -6,10 +6,14 @@
   hosts: localhost
   gather_facts: no
 
-  vars_files:
-    - conf.yml
-
   tasks:
+    - name: Load configuration file
+      include_vars: '{{item}}'
+      with_first_found:
+        # allow using `-e conf=name` and `-e conf=name.yml`
+        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - 'conf.yml'
+
     - name: create new file `downloaded.yml`
       copy:
         dest: 'vars/downloaded.yml'
@@ -44,10 +48,12 @@
 
   tasks:
 
-    # we cannot use `vars_files:` for this, as the file is parsed at Ansible
-    # startup time, before the above play gets to modify it
-    - include_vars:
-        file: conf.yml
+    - name: Load configuration file
+      include_vars: '{{item}}'
+      with_first_found:
+        # allow using `-e conf=name` and `-e conf=name.yml`
+        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - 'conf.yml'
 
     - include_vars:
         file: 'downloaded.yml'
@@ -77,10 +83,12 @@
   become: yes
 
   tasks:
-    # we cannot use `vars_files:` for this, as the file is parsed at Ansible
-    # startup time, before the above play gets to modify it
-    - include_vars:
-        file: conf.yml
+    - name: Load configuration file
+      include_vars: '{{item}}'
+      with_first_found:
+        # allow using `-e conf=name` and `-e conf=name.yml`
+        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - 'conf.yml'
 
     - name: Wait up to 60s for VM to accept SSH connections
       wait_for_connection:
@@ -125,10 +133,12 @@
       private: no
 
   tasks:
-    # we cannot use `vars_files:` for this, as the file is parsed at Ansible
-    # startup time, before the above play gets to modify it
-    - include_vars:
-        file: conf.yml
+    - name: Load configuration file
+      include_vars: '{{item}}'
+      with_first_found:
+        # allow using `-e conf=name` and `-e conf=name.yml`
+        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - 'conf.yml'
 
     - include_vars:
         file: 'downloaded.yml'
@@ -147,10 +157,14 @@
   hosts: localhost
   gather_facts: no
 
-  vars_files:
-    - conf.yml
-
   tasks:
+
+    - name: Load configuration file
+      include_vars: '{{item}}'
+      with_first_found:
+        # allow using `-e conf=name` and `-e conf=name.yml`
+        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - 'conf.yml'
 
     # we cannot use `vars_files:` for this, as the file is parsed at Ansible
     # startup time, before the above play gets to modify it
