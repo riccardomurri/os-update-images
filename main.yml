@@ -1,8 +1,8 @@
 ---
 
-- name: download official images
+- name: Fetch official images
   tags:
-    - download
+    - fetch
   hosts: localhost
   gather_facts: no
 
@@ -20,7 +20,7 @@
         content: |
           ---
 
-    - include_tasks: 'tasks/download.yml'
+    - include_tasks: 'tasks/fetch.yml'
       vars:
         source_url: '{{ img.source }}'
         source_file: '{{ img.source|basename }}'
