@@ -250,7 +250,7 @@ fi
 ansible-playbook -v main.yml \
                  -e conf="$conf" \
                  -e keypair="${keypair}" \
-                 -e prefix=""'*** '"" \
+                 -e prefix="" \
                  -e one_download_url="$one_download_url"
 
 
