@@ -10,8 +10,7 @@
     - name: Load configuration file
       include_vars: '{{item}}'
       with_first_found:
-        # allow using `-e conf=name` and `-e conf=name.yml`
-        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - '{{ conf | default(omit) }}'
         - 'conf.yml'
 
     - name: create new file `downloaded.yml`
@@ -51,8 +50,7 @@
     - name: Load configuration file
       include_vars: '{{item}}'
       with_first_found:
-        # allow using `-e conf=name` and `-e conf=name.yml`
-        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - '{{ conf | default(omit) }}'
         - 'conf.yml'
 
     - include_vars:
@@ -86,8 +84,7 @@
     - name: Load configuration file
       include_vars: '{{item}}'
       with_first_found:
-        # allow using `-e conf=name` and `-e conf=name.yml`
-        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - '{{ conf | default(omit) }}'
         - 'conf.yml'
 
     - name: Wait up to 60s for VM to accept SSH connections
@@ -138,8 +135,7 @@
     - name: Load configuration file
       include_vars: '{{item}}'
       with_first_found:
-        # allow using `-e conf=name` and `-e conf=name.yml`
-        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - '{{ conf | default(omit) }}'
         - 'conf.yml'
 
     - include_vars:
@@ -164,8 +160,7 @@
     - name: Load configuration file
       include_vars: '{{item}}'
       with_first_found:
-        # allow using `-e conf=name` and `-e conf=name.yml`
-        - '{{ conf | default(omit) | splitext | first }}.yml'
+        - '{{ conf | default(omit) }}'
         - 'conf.yml'
 
     # we cannot use `vars_files:` for this, as the file is parsed at Ansible
