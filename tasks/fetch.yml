@@ -20,7 +20,7 @@
     state: hard
     src: '{{ source_file }}'
     dest: '{{ dest_file }}'
-  when: 'dest_format == source_format'
+  when: 'dest_format == source_format and source_file != dest_file'
 
 
 - name: Compute MD5 checksum of destination image file
