@@ -3,22 +3,23 @@
 - name: Load target VM name in a variable
   set_fact:
     vm_name: 'os-update-images-{{ uuid }}-{{ name }}'
+    tmpl_name: 'os-update-images-{{ uuid }}-{{ name }}'
 
 
 - name: Clone VM start template
   command: |
-    onetemplate clone --verbose '{{flavor}}' '{{name}}'
+    onetemplate clone --verbose '{{ flavor }}' '{{ tmpl_name }}'
 
 
 - name: Create VM start template file
   template:
-    dest: '{{name}}.vm.tmpl'
+    dest: '{{ name }}.vm.tmpl'
     src: 'templates/one_vm.j2'
 
 
 - name: Update VM start template
   command: |
-    onetemplate update --verbose '{{name}}' '{{name}}.vm.tmpl'
+    onetemplate update --verbose '{{ tmpl_name }}' '{{ name }}.vm.tmpl'
 
 
 - name: start VM instance
@@ -27,13 +28,19 @@
     wait: yes
     attributes:
       name: '{{ vm_name }}'
-    template_name: '{{ name }}'
+    template_name: '{{ tmpl_name }}'
     # ensure every sysop in `id-sis-rp` can manage this VM
     group_id: 107
     # DISABLED(rmurri, 2020-01-15) This triggers an error on the Leonhard ONE;
     # by the current default umask of 0117, users cannot perform ADMIN operations
     # on VMs, and apparently `chmod` is one of them.
     #mode: 0770
+
+
+- name: Delete VM start template
+  command: |
+    onetemplate delete '{{ tmpl_name }}'
+  ignore_errors: yes
 
 
 - name: Wait for VM to be RUNNING
@@ -79,7 +86,7 @@
     extra_plays: '{{ extra_plays }}'
     extra_prefix: '{{ extra_prefix }}'
     # save this for later use in snapshot.yml
-    template_name: '{{ name }}'
+    tmpl_file: '{{ name }}.vm.tmpl'
 
 
 - name: prepare VM for Ansible
