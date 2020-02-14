@@ -1,0 +1,100 @@
+---
+
+- name: Load target VM name in a variable
+  set_fact:
+    vm_name: 'os-update-images-{{ uuid }}-{{ name }}'
+
+
+- name: Clone VM start template
+  command: |
+    onetemplate clone --verbose '{{flavor}}' '{{name}}'
+
+
+- name: Create VM start template file
+  template:
+    dest: '{{name}}.vm.tmpl'
+    src: 'templates/one_vm.j2'
+
+
+- name: Update VM start template
+  command: |
+    onetemplate update --verbose '{{name}}' '{{name}}.vm.tmpl'
+
+
+- name: start VM instance
+  one_vm:
+    state: present
+    wait: yes
+    attributes:
+      name: '{{ vm_name }}'
+    template_name: '{{ name }}'
+    # ensure every sysop in `id-sis-rp` can manage this VM
+    group_id: 107
+    # DISABLED(rmurri, 2020-01-15) This triggers an error on the Leonhard ONE;
+    # by the current default umask of 0117, users cannot perform ADMIN operations
+    # on VMs, and apparently `chmod` is one of them.
+    #mode: 0770
+
+
+- name: Wait for VM to be RUNNING
+  shell: |
+    while ! (onevm show '{{vm_name}}' --all | fgrep LCM_STATE | fgrep -q RUNNING); do
+      sleep 1
+    done
+
+
+- name: find out VM ID
+  shell: |
+    onevm show '{{vm_name}}' --all \
+      | egrep '^ID *:' \
+      | (read _ _ id; echo -n "$id")
+  register: vm_id
+
+
+- name: Record VM ID for later use
+  lineinfile:
+    path: 'vars/instances.yml'
+    line: '  - {{ vm_id.stdout }}'
+
+
+- name: find out VM IPv4 address
+  shell: |
+    onevm show '{{vm_name}}' --all \
+      | fgrep -A2 'VM NICS' \
+      | tail -n +3 \
+      | (read id net bridge ip _; echo -n "$ip")
+  register: vm_ip_addr
+
+
+- name: Add VM to inventory
+  add_host:
+    # `hostname` is the *IP address* of the new host
+    hostname: '{{ vm_ip_addr.stdout }}'
+    groups: 'targets'
+    ansible_ssh_user: '{{ user }}'
+    ansible_user: '{{ user }}'
+    instance_uuid: '{{ vm_id.stdout }}'
+    # following is the uuid of the image
+    uuid: '{{ uuid }}'
+    extra_plays: '{{ extra_plays }}'
+    extra_prefix: '{{ extra_prefix }}'
+    # save this for later use in snapshot.yml
+    template_name: '{{ name }}'
+
+
+- name: prepare VM for Ansible
+  # this is needed on official Ubuntu 16.04 images, otherwise the next
+  # playbook fails already at the `gather_facts:` step because no Python 2.x
+  # can be found -- so it needs to run *before* the "update VM images" play
+  shell: |
+      while true; do
+          if ssh -o UserKnownHostsFile=/dev/null \
+              -o StrictHostKeyChecking=no \
+              {{ user }}@{{ vm_ip_addr.stdout }} \
+              'command -v apt-get && sudo apt-get install -y python; exit 0';
+          then
+              break
+          fi
+          sleep 10
+      done
+  when: 'install_python2|bool'

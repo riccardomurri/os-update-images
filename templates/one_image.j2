@@ -1,0 +1,13 @@
+{# Template for uploading a VM image to ONE #}
+NAME="{{ name }} [upstream, {{ ansible_date_time.date}}, md5sum={{ image_md5sum.stdout }}]"
+PATH="{{ one_download_url }}/{{ dest_file }}"
+SIZE="{{ 1 + (dest_file_info.stat.size / 1048576 )|int }}"
+DESCRIPTION="
+Official cloud image for {{ name }}
+
+Downloaded from {{source_url}}
+on {{ ansible_date_time.date }}
+"
+TYPE="OS"
+DRIVER="{{ dest_format }}"
+MD5="{{ image_md5sum.stdout }}"

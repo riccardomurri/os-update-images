@@ -57,6 +57,13 @@
         file: 'downloaded.yml'
         name: uuid_of
 
+    - name: create new file `instances.yml`
+      copy:
+        dest: 'vars/instances.yml'
+        content: |
+          ---
+          ids:
+
     - include_tasks: 'tasks/{{cloud}}/start.yml'
       vars:
         name: '{{ img.name }}'

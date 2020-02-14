@@ -12,3 +12,4 @@
 # temporary working files
 extra_vars.yml
 vars/downloaded.yml
+vars/instances.yml

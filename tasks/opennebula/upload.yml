@@ -1,0 +1,107 @@
+---
+#
+# Upload an image to ONE and set `image_uuid`
+#
+
+- name: Check for existing image on OpenNebula
+  one_image_info:
+    name: '~.*md5sum={{ image_md5sum.stdout }}.*'
+  register: image_list
+
+
+- name: Stop if more than one image found
+  fail:
+    msg: |
+      More than one image with MD5 checkum {{image_md5sum.stdout}}
+  when: 'image_list.images|length > 1'
+
+
+- name: Set image ID from ONE query
+  set_fact:
+    image_uuid: '{{image_list.images[0].id}}'
+  when: 'image_list.images|length == 1'
+
+
+- name: Get info on image file
+  stat:
+    path: '{{ dest_file }}'
+    get_attributes: no
+    get_checksum: no
+    get_mime: no
+  register: dest_file_info
+  when: 'image_list.images|length == 0'
+
+
+- name: Create image upload template
+  template:
+    dest: '{{name}}.img.tmpl'
+    src: 'templates/one_image.j2'
+  when: 'image_list.images|length == 0'
+
+
+- name: Upload image to OpenNebula
+  shell: |
+    oneimage create -d 100 '{{name}}.img.tmpl' \
+      | egrep '^ID *:' \
+      | cut -d' ' -f2
+  register: image_create
+  failed_when: 'image_create.stdout == "" or "[one.image.allocate]" in image_create.stdout'
+  when: 'image_list.images|length == 0'
+
+
+- name: Delete upload template file
+  file:
+    path: '{{name}}.img.tmpl'
+    state: absent
+  when: 'image_list.images|length == 0 and not debug|default("no")|bool'
+
+
+- name: Set image UUID from `oneimage create`
+  set_fact:
+    image_uuid: '{{image_create.stdout}}'
+  when: 'image_list.images|length == 0'
+
+
+# see: https://gist.githubusercontent.com/jirutka/872389ca4858f65844e02a0f4d176827/raw/e4025ac2548538769b8e504254f6ea37aee8697e/oneimage-upload
+- name: Wait for image to be fully downloaded
+  shell: |
+    TIMEOUT=300
+    die() {
+      printf 'ERROR: %s\n' "$@" >&2
+      exit 1
+    }
+    # Parses image state from XML response of "oneimage show".
+    parse_image_state() {
+      local xml="${1:-$(cat)}"
+
+      local state=$(echo "$xml" | sed -En 's|.*<STATE>([^>]+)</STATE>.*|\1|p')
+      if [ -z "$state" ]; then
+        printf 'Invalid response:\n%s\n' "$xml" >&2
+        return 1
+      fi
+      # See https://docs.opennebula.org/5.0/integration/system_interfaces/api.html.
+      case "$state" in
+        0) echo INIT;;
+        1) echo READY;;
+        3) echo DISABLED;;
+        4) echo LOCKED;;
+        5) echo ERROR;;
+        *) echo $state;;
+      esac
+    }
+    # actually wait
+    elapsed=0
+    while true; do
+      [ $elapsed -lt $TIMEOUT ] || die "Timeout ${TIMEOUT}s exceeded!"
+
+      state=$(oneimage show --xml {{image_uuid}} | parse_image_state) || exit 1
+      case "$state" in
+        READY) break;;
+        INIT | LOCKED) ;;
+        *) die "Something went wrong, image state is: $state";;
+      esac
+
+      sleep 2
+      elapsed=$(( elapsed + 2 ))
+    done
+  when:  'image_list.images|length == 0'

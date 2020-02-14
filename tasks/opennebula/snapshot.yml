@@ -1,0 +1,37 @@
+---
+#
+# Snapshot a VM to disk
+#
+
+- name: Make VM snapshot
+  one_vm:
+    instance_ids:
+      - '{{ instance_uuid }}'
+    state: poweredoff
+    disk_saveas:
+      name: "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
+      disk_id: 0
+    wait: yes
+  become: no
+  delegate_to: localhost
+
+
+- name: Find out snapshot ID
+  shell: |
+    oneimage list -l ID,NAME --size id=6,name=100 | fgrep "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})" | (read id name _; echo -n "$id")
+  register: snapshot_id
+  delegate_to: localhost
+
+
+- name: Fix VM start template (local file)
+  lineinfile:
+    path: '{{ template_name }}.vm.tmpl'
+    regexp: 'IMAGE_ID=".*",'
+    line: 'IMAGE_ID="{{ snapshot_id.stdout }}",'
+  delegate_to: localhost
+
+
+- name: Fix VM start template (ONE template)
+  command: |
+    onetemplate update --verbose '{{ template_name }}' '{{ template_name }}.vm.tmpl'
+  delegate_to: localhost
