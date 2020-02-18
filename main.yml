@@ -4,7 +4,7 @@
   tags:
     - fetch
   hosts: localhost
-  gather_facts: no
+  gather_facts: yes
 
   tasks:
     - name: Load configuration file
@@ -69,6 +69,8 @@
         name: '{{ img.name }}'
         uuid: '{{ uuid_of[img.name] }}'
         user: '{{ img.user }}'
+        img_file: '{{ img.source|basename|splitext|first }}.{{ img_format }}'
+        img_format: '{{ format|default("qcow2") }}'
         extra_plays: '{{ img.extra_plays|default([]) }}'
         extra_prefix: '{{ img.extra_prefix|default("") }}'
         install_python2: '{{ img.install_python2|default("no") }}'
