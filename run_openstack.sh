@@ -15,7 +15,7 @@ me="$(basename $0)"
 
 usage () {
 cat <<EOF
-Usage: $me [CONF_FILE [NETWORK [KEYPAIR]]]
+Usage: $me [-c CONFIG_FILE] [-n NETWORK] [-k KEYPAIR]
 
 Update VM images on an OpenStack cloud.
 
