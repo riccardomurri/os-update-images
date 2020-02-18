@@ -1,0 +1,77 @@
+---
+#
+# List of base images to update on Leonhard Cloud.
+#
+# For each image, the following attributes are mandatory:
+# - `name` (a human readable string for display purposes)
+# - `uuid` (OpenStack image ID) or `source` (download URL for VM image in RAW or QCOW2 fmt)
+# - `user` (username to use when connecting over SSH)
+#
+# The following attributes are optional:
+# - `extra_plays`: list of additional playbooks to execute on host
+# - `extra_prefix`: a string that is prefixed to the VM snapshot name
+# - `format`: format of the downloaded image (any string that can be passed to
+#   `qemu-img`'s `-f` option; `qcow2` is the default)
+#
+# Combined, the first two optional attributes allow the creation of VM images
+# that run additional customization on top of base images.
+#
+# Additional attributes are allowed but will be ignored.
+
+images:
+  #
+  # Source URLs gotten from: https://www.rdoproject.org/resources/image-resources/
+  #
+
+  # - name: CentOS 7
+  #   source: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+  #   user: centos
+  #   use_virtio_scsi: yes
+
+  - name: CentOS 8
+    # CentOS removed links to the "latest" image from their download
+    # site, thus rendering this script partly useless; reported as
+    # https://bugs.centos.org/view.php?id=17063
+    source: https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2
+    user: centos
+    use_virtio_scsi: yes
+
+  # - name: Ubuntu 16.04
+  #   source: https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-disk1.img
+  #   user: ubuntu
+  #   use_virtio_scsi: yes
+  #   # older Ansible releases needed Python 2.7 on the target host,
+  #   # which is not part of the std Ubuntu 16.04 image
+  #   install_python2: yes
+
+  - name: Ubuntu 18.04
+    source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.img
+    user: ubuntu
+    use_virtio_scsi: yes
+
+  # The following is an example of how to re-create/update
+  # a VM image that installs additional SW on top of the base OS.
+
+  # - name: Ubuntu 18.04 with CUDA
+  #   source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.vmdk
+  #   user: ubuntu
+  #   use_virtio_scsi: yes
+  #   extra_plays: 'gpus.yml'
+  #   extra_prefix: 'CUDA 10.1 on '
+
+
+#
+# Cloud-specific parameters, that apply to all images
+#
+
+# cloud type, either `openstack` or `opennebula`
+cloud: opennebula
+
+# the format for uploading images to OpenStack; defaults to qcow2
+format: qcow2
+
+# template to use for instanciating ONE VMs
+flavor: 20
+
+# network (ID or name) to attach VMs to
+network: id-sis-playground

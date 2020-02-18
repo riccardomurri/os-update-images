@@ -23,35 +23,58 @@ images:
   # Source URLs gotten from: https://www.rdoproject.org/resources/image-resources/
   #
 
-  - name: CentOS 6
-    source: http://cloud.centos.org/centos/6/images/CentOS-6-x86_64-GenericCloud.qcow2
-    user: centos
-    use_virtio_scsi: yes
+  # - name: CentOS 6
+  #   source: http://cloud.centos.org/centos/6/images/CentOS-6-x86_64-GenericCloud.qcow2
+  #   user: centos
+  #   use_virtio_scsi: yes
 
   - name: CentOS 7
     source: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
     user: centos
     use_virtio_scsi: yes
+    properties:
+      vmware_ostype: 'centos7_64Guest'
+      vmware_disktype: sparse
 
-  - name: Debian 9
-    source: http://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2
-    user: debian
-    use_virtio_scsi: no
+  - name: CentOS 8
+    # CentOS removed links to the "latest" image from their download
+    # site, thus rendering this script partly useless; reported as
+    # https://bugs.centos.org/view.php?id=17063
+    source: https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2
+    user: centos
+    use_virtio_scsi: yes
+    properties:
+      # Our VMware does not have a `centos8_64Guest` type, assume
+      # `centos7_64Guest` is close enough
+      vmware_ostype: 'centos7_64Guest'
+      vmware_disktype: sparse
+
+  # - name: Debian 9
+  #   source: http://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2
+  #   user: debian
+  #   use_virtio_scsi: no
+  #   properties:
+  #     vmware_ostype: 'debian9_64Guest'
+  #     vmware_disktype: sparse
 
   - name: Debian 10
     source: http://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2
     user: debian
     use_virtio_scsi: yes
-
-  - name: Ubuntu 16.04
-    source: https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-disk1.vmdk
-    user: ubuntu
-    use_virtio_scsi: yes
-    # older Ansible releases needed Python 2.7 on the target host,
-    # which is not part of the std Ubuntu 16.04 image
-    #install_python2: yes
     properties:
-      vmware_ostype: 'ubuntu64Guest'
+      vmware_ostype: 'debian10_64Guest'
+      vmware_disktype: sparse
+
+  # - name: Ubuntu 16.04
+  #   source: https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-disk1.vmdk
+  #   user: ubuntu
+  #   use_virtio_scsi: yes
+  #   # older Ansible releases needed Python 2.7 on the target host,
+  #   # which is not part of the std Ubuntu 16.04 image
+  #   #install_python2: yes
+  #   properties:
+  #     vmware_ostype: 'ubuntu64Guest'
+  #     vmware_disktype: sparse
 
   - name: Ubuntu 18.04
     source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.vmdk
@@ -60,13 +83,14 @@ images:
     properties:
       img_config_drive: mandatory
       vmware_ostype: 'ubuntu64Guest'
+      vmware_disktype: sparse
 
-  - name: Ubuntu 18.04 with CUDA
-    source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.vmdk
-    user: ubuntu
-    use_virtio_scsi: yes
-    extra_plays: 'gpus.yml'
-    extra_prefix: 'CUDA 10.1 on '
+  # - name: Ubuntu 18.04 with CUDA
+  #   source: https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.vmdk
+  #   user: ubuntu
+  #   use_virtio_scsi: yes
+  #   extra_plays: 'gpus.yml'
+  #   extra_prefix: 'CUDA 10.1 on '
 
 
   # The following is an example of how to re-create/update
@@ -93,4 +117,4 @@ format: vmdk
 flavor: m1.small
 
 # network (ID or name) to attach VMs to
-network: DC_2519
+network: private
