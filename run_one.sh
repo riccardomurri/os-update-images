@@ -232,6 +232,10 @@ fi
 set -e
 
 if [ $http_forwarding = 'yes' ]; then
+    if [ -z "$one_download_url" ]; then
+        die 1 "No download URL specified; please re-run this script adding option '-u'."
+    fi
+
     # start http server to serve contents of local directory
     python3 -m http.server --bind localhost &
     children="$!"
