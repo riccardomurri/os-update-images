@@ -105,3 +105,17 @@
       elapsed=$(( elapsed + 2 ))
     done
   when:  'image_list.images|length == 0'
+
+
+- name: Extract minimum disk size
+  shell: |
+    oneimage show --xml {{image_uuid}} \
+      | sed -En 's|.*<SIZE>([^>]+)</SIZE>.*|\1|p' \
+      | tr -d '\r\n'
+  register: min_disk_size
+
+
+- name: Write image disk size into vars file
+  lineinfile:
+    dest: 'vars/min_size.yml'
+    line: '"{{name}}": {{min_disk_size.stdout}}'

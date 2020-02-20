@@ -13,11 +13,15 @@
         - '{{ conf | default(omit) }}'
         - 'conf.yml'
 
-    - name: create new file `downloaded.yml`
+    - name: create new files for recording additional info
       copy:
-        dest: 'vars/downloaded.yml'
+        dest: 'vars/{{ item }}'
         content: |
           ---
+      loop:
+        - 'downloaded.yml'
+        # only used in ONE
+        - 'min_size.yml'
 
     - include_tasks: 'tasks/fetch.yml'
       vars:
@@ -57,6 +61,10 @@
         file: 'downloaded.yml'
         name: uuid_of
 
+    - include_vars:
+        file: 'min_size.yml'
+        name: min_disk_size_of
+
     - name: create new file `instances.yml`
       copy:
         dest: 'vars/instances.yml'
@@ -71,6 +79,7 @@
         user: '{{ img.user }}'
         img_file: '{{ img.source|basename|splitext|first }}.{{ img_format }}'
         img_format: '{{ format|default("qcow2") }}'
+        img_size: '{{ min_disk_size_of[img.name] }}'
         extra_plays: '{{ img.extra_plays|default([]) }}'
         extra_prefix: '{{ img.extra_prefix|default("") }}'
         install_python2: '{{ img.install_python2|default("no") }}'

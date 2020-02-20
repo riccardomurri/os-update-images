@@ -43,4 +43,4 @@
 - name: Write image UUID into vars file
   lineinfile:
     dest: 'vars/downloaded.yml'
-    line: '{{name}}: {{image_uuid}}'
+    line: '"{{name}}": {{image_uuid}}'
