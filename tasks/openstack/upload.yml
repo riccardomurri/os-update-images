@@ -39,7 +39,7 @@
         --disk-format {{dest_format}} \
         --container-format bare \
         --file '{{dest_file}}' \
-        -f yaml -c id '{{name}} [upstream]' \
+        -f yaml -c id '{{name}} [DO NOT USE]' \
         | cut -c5-  # extract UUID
   register: image_create
   failed_when: 'image_create.stderr != ""'

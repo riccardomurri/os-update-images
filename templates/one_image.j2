@@ -1,5 +1,5 @@
 {# Template for uploading a VM image to ONE #}
-NAME="{{ name }} [upstream, {{ ansible_date_time.date}}, md5sum={{ image_md5sum.stdout }}]"
+NAME="{{ name }} [DO NOT USE, {{ ansible_date_time.date}}, md5sum={{ image_md5sum.stdout }}]"
 PATH="{{ one_download_url }}/{{ dest_file }}"
 SIZE="{{ 1 + (dest_file_info.stat.size / 1048576 )|int }}"
 DESCRIPTION="
