@@ -5,6 +5,7 @@
 *.img
 *.qcow2
 *.raw
+*.vmdk
 
 # Ansible leftovers
 *.retry
