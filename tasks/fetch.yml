@@ -15,7 +15,14 @@
   when: 'dest_format != source_format'
 
 
-- name: Copy image file {{source_file}} to {{dest_file}}
+- name: Copy image file {{source_file}} to {{dest_file}} (1/2)
+  file:
+    state: absent
+    dest: '{{ dest_file }}'
+  when: 'dest_format == source_format and source_file != dest_file'
+
+
+- name: Copy image file {{source_file}} to {{dest_file}} (2/2)
   file:
     state: hard
     src: '{{ source_file }}'
