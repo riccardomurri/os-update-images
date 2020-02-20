@@ -47,3 +47,4 @@
   file:
     path: '{{ tmpl_file }}'
     state: absent
+  delegate_to: localhost
