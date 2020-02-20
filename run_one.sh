@@ -221,7 +221,7 @@ if [ -z "$conf" ]; then
     conf='conf.yml'
 fi
 if ! [ -r "$conf" ]; then
-    die "Cannot read configuration file '$conf'."
+    die 1 "Cannot read configuration file '$conf'."
 fi
 
 if [ -z "$keypair" ]; then
