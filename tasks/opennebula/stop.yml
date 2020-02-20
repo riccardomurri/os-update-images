@@ -15,3 +15,9 @@
   with_items: '{{ images }}'
   loop_control:
     loop_var: img
+
+- name: Delete upstream images
+  include_tasks: 'rm_upstream_img.yml'
+  vars:
+    vm_id: '{{ item }}'
+  loop: '{{ instances.ids }}'

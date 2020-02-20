@@ -1,0 +1,15 @@
+---
+
+- name: Extract upstream image ID
+  shell: |
+    onevm show -v --xml {{vm_id}} \
+      | sed -En 's|.*<IMAGE_ID>!\[CDATA\[([0-9]+)\]\]</IMAGE_ID>.*|\1|p' \
+      | tr -d '\r\n'
+  register: upstream_image_id
+  ignore_errors: yes
+
+- name: Delete upstream image
+  command: |
+    oneimage delete {{ upstream_image_id.stdout }}
+  ignore_errors: yes
+  when: upstream_image_id is success
