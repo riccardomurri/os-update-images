@@ -39,7 +39,7 @@
 
 - name: Fix VM start template (ONE template)
   command: |
-    onetemplate create --verbose '{{ template_name }}' '{{ tmpl_file }}'
+    onetemplate create --verbose --name '{{ img_name }}' '{{ tmpl_file }}'
   delegate_to: localhost
 
 
