@@ -70,8 +70,5 @@ cloud: opennebula
 # the format for uploading images to OpenStack; defaults to qcow2
 format: qcow2
 
-# template to use for instanciating ONE VMs
-flavor: 20
-
 # network (ID or name) to attach VMs to
 network: id-sis-playground

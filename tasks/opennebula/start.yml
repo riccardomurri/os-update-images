@@ -6,20 +6,15 @@
     tmpl_name: 'os-update-images-{{ uuid }}-{{ name }}'
 
 
-- name: Clone VM start template
-  command: |
-    onetemplate clone --verbose '{{ flavor }}' '{{ tmpl_name }}'
-
-
 - name: Create VM start template file
   template:
     dest: '{{ name }}.vm.tmpl'
     src: 'templates/one_vm.j2'
 
 
-- name: Update VM start template
+- name: Create VM start template
   command: |
-    onetemplate update --verbose '{{ tmpl_name }}' '{{ name }}.vm.tmpl'
+    onetemplate create --verbose --name '{{ tmpl_name }}' '{{ name }}.vm.tmpl'
 
 
 - name: start VM instance
