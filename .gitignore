@@ -9,6 +9,8 @@
 
 # Ansible leftovers
 *.retry
+*.img.tmpl
+*.vm.tmpl
 
 # temporary working files
 extra_vars.yml
