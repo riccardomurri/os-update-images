@@ -42,7 +42,7 @@
     state: latest
 
 
-- name: Ensure `/usr/bin/lsb_release` is installed
+- name: Make image LSB-compliant
   yum:
-    name: '/usr/bin/lsb_release'
+    name: 'redhat-lsb-core'
     state: present
