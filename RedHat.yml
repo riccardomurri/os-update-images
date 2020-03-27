@@ -3,7 +3,7 @@
 - import_tasks: 'default.yml'
 
 
-- name: Use ETHZ' CentOS package mirror (CentOS/RHEL)
+- name: Use ETHZ' CentOS package mirror (CentOS/RHEL 6.x, 7.x)
   replace:
     path: /etc/yum.repos.d/CentOS-Base.repo
     regexp: '^ *#? *(mirrorlist=|baseurl=http://mirror.centos.org).*$'
@@ -16,6 +16,24 @@
     # - CentOS-CR.repo
     # - CentOS-Media.repo
     # - CentOS-Vault.repo
+  when: 'ansible_distribution_major_version|int < 8'
+
+
+# layout of repository directories changed in CentOS/RHEL 8
+- name: Use ETHZ' CentOS package mirror (CentOS/RHEL 8.x)
+  replace:
+    path: /etc/yum.repos.d/CentOS-Base.repo
+    regexp: '^ *#? *(mirrorlist=|baseurl=http://mirror.centos.org).*$'
+    replace: 'baseurl=http://mirror.ethz.ch/centos/$releasever/BaseOS/$basearch/os/'
+  loop:
+    - CentOS-Base.repo
+    # - CentOS-Debuginfo.repo
+    # - CentOS-Sources.repo
+    # - CentOS-fasttrack.repo
+    # - CentOS-CR.repo
+    # - CentOS-Media.repo
+    # - CentOS-Vault.repo
+  when: 'ansible_distribution_major_version|int == 8'
 
 
 - name: upgrade all packages (CentOS/RHEL)
