@@ -23,10 +23,10 @@ images:
   # Source URLs gotten from: https://www.rdoproject.org/resources/image-resources/
   #
 
-  # - name: CentOS 7
-  #   source: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
-  #   user: centos
-  #   use_virtio_scsi: yes
+  - name: CentOS 7
+    source: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+    user: centos
+    use_virtio_scsi: yes
 
   - name: CentOS 8
     # CentOS removed links to the "latest" image from their download
