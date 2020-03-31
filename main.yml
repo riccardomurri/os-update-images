@@ -130,6 +130,17 @@
     - import_tasks: 'tasks/cleanup.yml'
       become: yes
 
+    # we need to shutdown VM after cleanup to ensure that the root disk is clean
+    - name: shutdown VM instance
+      shell: |
+        openstack server stop "{{ instance_uuid }}"; sleep 30; openstack server show -c status "{{ instance_uuid }}" | grep SHUTOFF
+      register: cmd_result
+      retries: 10
+      until: cmd_result | success
+      become: no
+      delegate_to: localhost
+
+
     - name: make VM snapshot
       shell: |
         nova image-create --poll "{{ instance_uuid }}" "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
