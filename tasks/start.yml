@@ -7,7 +7,7 @@
     wait: yes
     image: '{{ uuid }}'
     boot_from_volume: no
-    flavor: 1cpu-4ram-hpc
+    flavor: 1cpu-4ram-hpcv3
     key_name: '{{ keypair }}'
     network: '{{ network }}'
 
