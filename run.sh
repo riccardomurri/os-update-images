@@ -14,6 +14,11 @@
 KEYNAME=$1
 [ -z "$KEYNAME" ] && KEYNAME=$LOGNAME
 
+[ $OS_PROJECT_NAME = 's3it.uzh' ] || { 
+    echo "Please load 's3it.uzh' project credentials."
+    exit 1
+}
+
 set -e
 ansible-playbook main.yml -e keypair="${KEYNAME}" -e prefix=""'*** '""
 
