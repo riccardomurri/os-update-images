@@ -32,7 +32,7 @@
         --property hw_disk_bus=scsi \
         {%- endif %}
         {% if properties -%}
-          {% for key, value in properties.iteritems() %}
+          {% for key, value in properties.items() %}
         --property '{{key}}={{value}}' \
           {%- endfor %}
         {%- endif %}
