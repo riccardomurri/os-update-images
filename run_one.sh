@@ -232,6 +232,28 @@ if [ -z "$keypair" ]; then
     warn "No keypair name was specified, using '$keypair'."
 fi
 
+if [ -z "$ONE_URL" ]; then
+    die $EX_USAGE "Environment variable ONE_URL should be set to the URL of ONE's XML-RPC server; e.g., ONE_URL='http://localhost:2633/RPC2'"
+fi
+
+if [ -z "$ONE_USERNAME" ]; then
+    if [ -r "${ONE_AUTH:-$HOME/.one/one_auth}" ]; then
+        warn "Env var ONE_USERNAME is not set; reading ONE user name from file '${ONE_AUTH:-$HOME/.one/one_auth}'"
+        ONE_USERNAME=$(cat "${ONE_AUTH:-$HOME/.one/one_auth}" | cut -d: -f1)
+    else
+        die $EX_USAGE "Environment variable ONE_USERNAME should be set to the user name to authenticate to ONE server with."
+    fi
+fi
+
+if [ -z "$ONE_USERNAME" ]; then
+    if [ -r "${ONE_AUTH:-$HOME/.one/one_auth}" ]; then
+        warn "Env var ONE_PASSWORD is not set; reading ONE password from file '${ONE_AUTH:-$HOME/.one/one_auth}'"
+        ONE_PASSWORD=$(cat "${ONE_AUTH:-$HOME/.one/one_auth}" | cut -d: -f2)
+    else
+        die $EX_USAGE "Environment variable ONE_PASSWORD should be set to the password for ONE user '$ONE_USERNAME'."
+    fi
+fi
+
 set -e
 
 if [ $http_forwarding = 'yes' ]; then
