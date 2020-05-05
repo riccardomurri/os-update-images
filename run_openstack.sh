@@ -205,6 +205,7 @@ done
 
 require_command ansible-playbook
 require_command openstack
+require_command qemu-img
 
 if [ -z "$conf" ]; then
     conf='conf.yml'
