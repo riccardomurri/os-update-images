@@ -172,8 +172,8 @@ is_absolute_path () {
 
 ## parse command-line
 
-short_opts='c:hnu:'
-long_opts='config:,help,no-http-forwarding,one-download-url:'
+short_opts='c:hk:nu:'
+long_opts='config:,help,keypair:,no-http-forwarding,one-download-url:'
 
 # test which \`getopt\` version is available:
 # - GNU \`getopt\` will generate no output and exit with status 4
