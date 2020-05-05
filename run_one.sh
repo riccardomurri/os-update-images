@@ -214,6 +214,9 @@ done
 ## main
 
 require_command ansible-playbook
+require_command oneimage
+require_command onetemplate
+require_command onevm
 require_command python3
 require_command ssh
 
