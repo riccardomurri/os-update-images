@@ -55,5 +55,5 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 A copy of the GNU General Public License is included in file
-[LICENSE](https://github.com/riccardomurri/os-update-images/blob/master/LICENSE)
-along with this program.  Alternatively, see <http://www.gnu.org/licenses/>.
+`LICENSE <https://github.com/riccardomurri/os-update-images/blob/master/LICENSE>`_
+along with this program.  Alternatively, see http://www.gnu.org/licenses/
