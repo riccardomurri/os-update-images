@@ -1,5 +1,4 @@
-Update OpenStack VM images
-==========================
+# Update OpenStack VM images
 
 This repository hosts a set of Ansible scripts to make periodic updates of base
 VM images (relatively) effortless.
@@ -12,21 +11,20 @@ OpenNebula][3] infrastructures.
 [2]: http://www.ethz.ch/
 [3]: https://opennebula.org/eth-zurich/
 
-Installation
-------------
 
-#. Make a Python virtualenv
-#. Install Ansible and additional dependencies::
+## Installation
+
+1. Make a Python virtualenv
+2. Install Ansible and additional dependencies:
 
         pip install -r requirements.txt
 
-Usage
------
+## Usage
 
-#. Edit file `conf.yml`: list the download URL and SSH connection username
+1. Edit file `conf.yml`: list the download URL and SSH connection username
    of all base VM images that you want to update.
-#. Load OpenStack or OpenNebula credentials into the environment
-#. Run the `main.yml` playbook::
+2. Load OpenStack or OpenNebula credentials into the environment
+3. Run the `main.yml` playbook:
 
         ansible-playbook main.yml
 
@@ -38,10 +36,10 @@ Usage
    are provided to automate this pass.
 
 
-Copyright and license
----------------------
+## Copyright and license
 
 Copyright (C) 2017-2019 University of Zurich
+
 Copyright (C) 2019-2020 ETH Zurich
 
 This program is free software: you can redistribute it and/or modify
@@ -55,5 +53,5 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 A copy of the GNU General Public License is included in file
-`LICENSE <https://github.com/riccardomurri/os-update-images/blob/master/LICENSE>`_
-along with this program.  Alternatively, see http://www.gnu.org/licenses/
+[LICENSE](https://github.com/riccardomurri/os-update-images/blob/master/LICENSE)
+along with this program.  Alternatively, see <http://www.gnu.org/licenses/>
