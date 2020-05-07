@@ -71,4 +71,8 @@ cloud: opennebula
 format: qcow2
 
 # network (ID or name) to attach VMs to
-network: id-sis-playground
+network: id-sis-ethonly
+
+# inside ETHZ, use HTTP proxy to download software
+http_proxy_url: 'http://proxy.ethz.ch:3128/'
+no_proxy_domain: '.ethz.ch'

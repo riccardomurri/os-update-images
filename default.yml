@@ -5,14 +5,14 @@
 - name: Use ETHZ HTTP proxy for HTTP/FTP access
   lineinfile:
     path: /etc/environment
-    line: "{{item}}_proxy=http://proxy.ethz.ch:3128/"
+    line: "{{item}}_proxy={{ http_proxy_url }}"
     state: present
     create: yes
   loop:
     - ftp
     - http
     - https
-
+  when: 'http_proxy_url|default(false)'
 
 # NOTE: CIDR syntax for the `no_proxy` variable is an extension; the
 # original specification for `no_proxy` only supports DNS domain names
@@ -21,6 +21,7 @@
 - name: No proxy for local domains
   lineinfile:
     path: /etc/environment
-    line: "no_proxy=localhost,127.0.0.1,169.254.169.254,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.ethz.ch"
+    line: "no_proxy=localhost,127.0.0.1,169.254.169.254,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16{% if no_proxy_domain %},{{ no_proxy_domain }}{% endif %}"
     state: present
     create: yes
+  when: 'http_proxy_url|default(false)'
