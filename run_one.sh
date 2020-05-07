@@ -261,18 +261,25 @@ if [ $http_forwarding = 'yes' ]; then
         die 1 "No download URL specified; please re-run this script adding option '-u'."
     fi
 
-    # start http server to serve contents of local directory
-    python3 -m http.server --bind localhost &
-    children="$!"
-    trap 'kill $children;' EXIT INT ABRT QUIT TERM
-
     # we know python is available, use it to parse URL
     host=$(python3 -c "from urllib.parse import urlsplit; print(urlsplit('${one_download_url}').netloc)")
     port=$(python3 -c "from urllib.parse import urlsplit; print(urlsplit('${one_download_url}').port or 80)")
 
-    # forward remote HTTP traffic to local server
-    ssh -n -N -R :$port:localhost:8000 "root@$host" &
-    children="$! $children"
+    if [ "$host" = $(hostname -f) ] || [ "$host" = $(hostname -s) ]; then
+        # start http server to serve contents of local directory
+        python3 -m http.server --bind 0.0.0.0 $port &
+        children="$!"
+    else
+        # start http server to serve contents of local directory
+        python3 -m http.server --bind localhost 8000 &
+        children="$!"
+
+        # forward remote HTTP traffic to local server
+        ssh -n -N -R :$port:localhost:8000 "root@$host" &
+        children="$! $children"
+    fi
+
+    trap 'kill $children;' EXIT INT ABRT QUIT TERM
 fi
 
 # run playbook
