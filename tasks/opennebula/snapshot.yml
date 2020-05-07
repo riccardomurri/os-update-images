@@ -5,8 +5,7 @@
 
 - name: Load image and template name in variables
   set_fact:
-    img_name: "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
-    template_name: "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date}})"
+    img_name: "{{ prefix }}{{ extra_prefix|default('') }}{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_date_time.date }})"
 
 
 - name: Make VM snapshot
@@ -29,7 +28,7 @@
   delegate_to: localhost
 
 
-- name: Fix VM start template (local file)
+- name: 'Fix VM start template (local file): IMAGE_ID'
   lineinfile:
     path: '{{ tmpl_file }}'
     regexp: 'IMAGE_ID=".*",'
@@ -37,9 +36,17 @@
   delegate_to: localhost
 
 
+- name: 'Fix VM start template (local file): NAME'
+  lineinfile:
+    path: '{{ tmpl_file }}'
+    regexp: 'NAME=".*",'
+    line: 'NAME="{{ img_name }}",'
+  delegate_to: localhost
+
+
 - name: Fix VM start template (ONE template)
   command: |
-    onetemplate create --verbose --name '{{ img_name }}' '{{ tmpl_file }}'
+    onetemplate create --verbose '{{ tmpl_file }}'
   delegate_to: localhost
 
 
