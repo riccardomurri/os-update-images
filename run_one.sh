@@ -262,7 +262,7 @@ if [ $http_forwarding = 'yes' ]; then
     fi
 
     # we know python is available, use it to parse URL
-    host=$(python3 -c "from urllib.parse import urlsplit; print(urlsplit('${one_download_url}').netloc)")
+    host=$(python3 -c "from urllib.parse import urlsplit; print(urlsplit('${one_download_url}').netloc.split(':')[0])")
     port=$(python3 -c "from urllib.parse import urlsplit; print(urlsplit('${one_download_url}').port or 80)")
 
     if [ "$host" = $(hostname -f) ] || [ "$host" = $(hostname -s) ]; then
