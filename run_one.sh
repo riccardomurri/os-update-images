@@ -9,7 +9,7 @@ me="$(basename $0)"
 
 usage () {
 cat <<EOF
-Usage: $me [CONF_FILE [NETWORK [KEYPAIR]]]
+Usage: $me [-c CONF_FILE] [-n NETWORK] [-k KEYPAIR]
 
 Update VM images on an OpenNebula cloud.
 
