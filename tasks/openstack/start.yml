@@ -10,6 +10,7 @@
     flavor: '{{ flavor }}'
     key_name: '{{ keypair }}'
     network: '{{ network }}'
+    auto_floating_ip: '{{ use_floating_ip|default("no")|bool }}'
 
 - name: gather VM facts
   os_server_info:
