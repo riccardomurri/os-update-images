@@ -3,7 +3,7 @@
 - name: Extract upstream image ID
   shell: |
     onevm show -v --xml {{vm_id}} \
-      | sed -En 's|.*<IMAGE_ID>!\[CDATA\[([0-9]+)\]\]</IMAGE_ID>.*|\1|p' \
+      | sed -En 's|.*<IMAGE_ID><!\[CDATA\[([0-9]+)\]\]></IMAGE_ID>.*|\1|p' \
       | tr -d '\r\n'
   register: upstream_image_id
   ignore_errors: yes
