@@ -267,15 +267,15 @@ if [ $http_forwarding = 'yes' ]; then
 
     if [ "$host" = $(hostname -f) ] || [ "$host" = $(hostname -s) ]; then
         # start http server to serve contents of local directory
-        python3 -m http.server --bind 0.0.0.0 $port &
+        python3 -m http.server --bind 0.0.0.0 "$port" &
         children="$!"
     else
         # start http server to serve contents of local directory
-        python3 -m http.server --bind localhost 8000 &
+        python3 -m http.server --bind localhost "$port" &
         children="$!"
 
         # forward remote HTTP traffic to local server
-        ssh -n -N -R :$port:localhost:8000 "root@$host" &
+        ssh -n -N -R "*:$port:localhost:$port" "$host" &
         children="$! $children"
     fi
 
