@@ -24,7 +24,11 @@ images:
   #
 
   - name: CentOS 7
-    source: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+    # FIXME: As of 2020-05, the latest CentOS 7 cloud image is broken and won't
+    # run `cloud-init` upon boot; use the last known working image instead.
+    # This should be changed back when the bug is fixed.
+    #source: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+    source: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1907.qcow2
     user: centos
     use_virtio_scsi: yes
 
