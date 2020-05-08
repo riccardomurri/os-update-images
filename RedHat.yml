@@ -7,7 +7,7 @@
   replace:
     path: /etc/yum.repos.d/CentOS-Base.repo
     regexp: '^ *#? *(mirrorlist=|baseurl=http://mirror.centos.org).*$'
-    replace: 'baseurl=http://mirror.ethz.ch/centos/$releasever/os/$basearch/'
+    replace: 'baseurl={{ centos_mirror_url }}/$releasever/os/$basearch/'
   loop:
     - CentOS-Base.repo
     # - CentOS-Debuginfo.repo
@@ -16,7 +16,7 @@
     # - CentOS-CR.repo
     # - CentOS-Media.repo
     # - CentOS-Vault.repo
-  when: 'ansible_distribution_major_version|int < 8'
+  when: 'centos_mirror_url|default(false) and ansible_distribution_major_version|int < 8'
 
 
 # layout of repository directories changed in CentOS/RHEL 8
@@ -24,7 +24,7 @@
   replace:
     path: /etc/yum.repos.d/CentOS-Base.repo
     regexp: '^ *#? *(mirrorlist=|baseurl=http://mirror.centos.org).*$'
-    replace: 'baseurl=http://mirror.ethz.ch/centos/$releasever/BaseOS/$basearch/os/'
+    replace: 'baseurl={{ centos_mirror_url }}/$releasever/BaseOS/$basearch/os/'
   loop:
     - CentOS-Base.repo
     # - CentOS-Debuginfo.repo
@@ -33,7 +33,7 @@
     # - CentOS-CR.repo
     # - CentOS-Media.repo
     # - CentOS-Vault.repo
-  when: 'ansible_distribution_major_version|int == 8'
+  when: 'centos_mirror_url|default(false) and ansible_distribution_major_version|int == 8'
 
 
 - name: upgrade all packages (CentOS/RHEL)

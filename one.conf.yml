@@ -80,3 +80,6 @@ network: id-sis-ethonly
 # inside ETHZ, use HTTP proxy to download software
 http_proxy_url: 'http://proxy.ethz.ch:3128/'
 no_proxy_domain: '.ethz.ch'
+
+# inside ETHZ, use local package mirror
+centos_mirror_url: 'http://mirror.ethz.ch/centos'
