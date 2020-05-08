@@ -91,7 +91,7 @@ format: qcow2
 flavor: m1.small
 
 # network (ID or name) to attach VMs to
-network: public
+network: private
 
 # request a public IP, otherwise we can only connect over IPv6
 use_floating_ip: yes
