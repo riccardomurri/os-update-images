@@ -214,11 +214,14 @@ done
 ## main
 
 require_command ansible-playbook
+require_command hostname
+require_command mktemp
 require_command oneimage
 require_command onetemplate
 require_command onevm
 require_command python3
 require_command ssh
+require_command uname
 
 if [ -z "$conf" ]; then
     conf='conf.yml'
@@ -265,7 +268,20 @@ if [ $http_forwarding = 'yes' ]; then
     host=$(python3 -c "from urllib.parse import urlsplit; print(urlsplit('${one_download_url}').netloc.split(':')[0])")
     port=$(python3 -c "from urllib.parse import urlsplit; print(urlsplit('${one_download_url}').port or 80)")
 
-    if [ "$host" = $(hostname -f) ] || [ "$host" = $(hostname -s) ]; then
+    # gather all possible ways of referring to "this host"
+    hostnames=$(mktemp -t "${me}.XXXXXXXX.tmp")
+    if [ -z "$hostnames" ]; then
+        die $EX_CANTCREAT "Cannot create temporary file."
+    fi
+    ip addr show up primary scope global \
+        | grep -F inet \
+        | (while read -r _ ip _; do echo "$ip"; done) \
+        | cut -d/ -f1 > "$hostnames"
+    hostname -f  1> "$hostnames" 2>/dev/null
+    hostname -s  1> "$hostnames" 2>/dev/null
+    uname -n 1> "$hostnames" 2>/dev/null
+
+    if grep -q -F -e "$host" "$hostnames"; then
         # start http server to serve contents of local directory
         python3 -m http.server --bind 0.0.0.0 "$port" &
         children="$!"
