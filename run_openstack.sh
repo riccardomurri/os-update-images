@@ -157,8 +157,19 @@ require_command () {
   fi
 }
 
-is_absolute_path () {
-    expr match "$1" '/' >/dev/null 2>/dev/null
+have_clouds_yaml () {
+    # see: https://docs.openstack.org/python-openstackclient/pike/configuration/index.html
+    for dir in \
+        "$PWD" \
+        "$HOME/.config/openstack" \
+        "/etc/openstack" \
+        ;
+    do
+        if [ -r "$dir/clouds.yaml" ]; then
+            return 0  # OK
+        fi
+    done
+    return 1  # not found
 }
 
 
@@ -222,6 +233,10 @@ fi
 if [ -z "$keypair" ]; then
     keypair=$LOGNAME
     warn "No keypair name was specified, using '$keypair'."
+fi
+
+if [ -z "$OS_AUTH_URL" ] && ! have_clouds_yaml; then
+    die $EX_DATAERR "No 'OS_AUTH_URL' in environment, and no 'clouds.yaml' file found.  Have you forgotten to source the openrc file?"
 fi
 
 set -e
