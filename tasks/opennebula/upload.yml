@@ -45,7 +45,7 @@
       | egrep '^ID *:' \
       | cut -d' ' -f2
   register: image_create
-  failed_when: 'image_create.stdout == "" or "[one.image.allocate]" in image_create.stdout'
+  failed_when: '"[one.image.allocate]" in image_create.stdout or not image_create.stdout.strip()'
   when: 'image_list.images|length == 0'
 
 

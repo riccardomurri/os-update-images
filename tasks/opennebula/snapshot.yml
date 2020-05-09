@@ -26,6 +26,7 @@
     oneimage list -l ID,NAME --size id=6,name=100 | fgrep "{{ img_name }}" | (read id name _; echo -n "$id")
   register: snapshot_id
   delegate_to: localhost
+  failed_when: 'not snapshot_id.stdout.strip()'
 
 
 - name: 'Fix VM start template (local file): IMAGE_ID'
