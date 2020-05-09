@@ -40,8 +40,15 @@
 
 - name: Wait for VM to be RUNNING
   shell: |
+    TIMEOUT=300
+    elapsed=0
     while ! (onevm show '{{vm_name}}' --all | fgrep LCM_STATE | fgrep -q RUNNING); do
       sleep 1
+      elapsed=$(expr 1 + $elapsed)
+      if [ $elapsed -gt $TIMEOUT ]; then
+        echo "ERROR: VM '{{ vm_name }}' not RUNNING after $TIMEOUT seconds."
+        exit 1
+      fi
     done
 
 
