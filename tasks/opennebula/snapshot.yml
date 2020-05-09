@@ -45,8 +45,18 @@
 
 
 - name: Fix VM start template (ONE template)
-  command: |
-    onetemplate create --verbose '{{ tmpl_file }}'
+  shell: |
+    onetemplate create --verbose '{{ tmpl_file }}' \
+          | egrep '^ID *:' \
+          | cut -d: -f2
+  register: template_id
+  delegate_to: localhost
+  failed_when: 'not template_id.stdout.strip()'
+
+
+- name: Rename VM star template
+  shell: |
+    onetemplate rename '{{ template_id.stdout.strip() }}' '{{ img_name }}'
   delegate_to: localhost
 
 
