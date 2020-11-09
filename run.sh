@@ -15,8 +15,12 @@ KEYNAME=$1
 [ -z "$KEYNAME" ] && KEYNAME=$LOGNAME
 
 [ $OS_PROJECT_NAME = 's3it.uzh' ] || { 
-    echo "Please load 's3it.uzh' project credentials."
-    exit 1
+    echo "You have '$OS_PROJECT_NAME' credential loaded."
+    echo "Please exit and load 's3it.uzh' project credentials."
+    echo "Type 'sure' and hit enter to continue with current credentials"
+    echo "or just enter to exit"
+    read res
+    [ "$res" = "sure" ] || exit 1
 }
 
 set -e
