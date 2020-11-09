@@ -136,7 +136,7 @@
         openstack server stop "{{ instance_uuid }}"; sleep 30; openstack server show -c status "{{ instance_uuid }}" | grep SHUTOFF
       register: cmd_result
       retries: 10
-      until: cmd_result | success
+      until: cmd_result is success
       become: no
       delegate_to: localhost
 
