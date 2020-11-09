@@ -58,8 +58,19 @@ images:
     user: ubuntu
     use_virtio_scsi: yes
     extra_plays: 'gpus.yml'
-    extra_prefix: 'CUDA 10.1 on '
+    extra_prefix: 'CUDA 10.2 on '
 
+#  - name: Ubuntu 20.04
+#    source: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+#    user: ubuntu
+#    use_virtio_scsi: yes
+#
+#  - name: Ubuntu 20.04 with CUDA
+#    source: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+#    user: ubuntu
+#    use_virtio_scsi: yes
+#    extra_plays: 'gpus.yml'
+#    extra_prefix: 'CUDA 10.2 on '
 
   # The following is an example of how to re-create/update
   # a VM image that installs additional SW on top of the base OS.

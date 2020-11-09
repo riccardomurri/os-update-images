@@ -7,7 +7,7 @@
   set_fact:
     # Version of CUDA to install.
     cuda_version_major: '10'
-    cuda_version_minor: '1'
+    cuda_version_minor: '2'
     # GPG key used to sign CUDA packages
     cuda_apt_key: '7FA2AF80'
 
